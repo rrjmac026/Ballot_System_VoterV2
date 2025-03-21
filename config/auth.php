@@ -40,6 +40,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'voter' => 
+        [  // ✅ Add this voter guard
+        'driver' => 'session',
+        'provider' => 'voters',
+    ],
         
     ],
 
@@ -64,6 +70,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        'voters' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Voter::class, // Ensure this points to the correct Voter model
         ],
 
         // 'users' => [

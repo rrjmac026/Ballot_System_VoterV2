@@ -33,7 +33,7 @@ class VotingController extends Controller
      */
     public function store(Request $request)
     {
-        $voter = Auth::user(); // ✅ Ensure authenticated user
+        $voter = Auth::user(); 
 
         // ✅ Prevent duplicate voting
         if (CastedVote::where('voter_id', $voter->voter_id)->exists()) {
@@ -60,12 +60,17 @@ class VotingController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('voters.confirmation')->with('success', 'Your vote has been successfully submitted!');
+            return redirect()->route('voter.voting.confirmation')->with('success', 'Your vote has been successfully submitted!');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            // ✅ Log the exact error
+            \Log::error('Voting Error: ' . $e->getMessage());
+
             return back()->with('error', 'An error occurred while casting your vote. Please try again.');
         }
     }
+
 
     /**
      * Show vote confirmation page.

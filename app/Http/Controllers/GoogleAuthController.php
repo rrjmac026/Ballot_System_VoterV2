@@ -23,31 +23,33 @@ class GoogleAuthController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            // Get voter details from Google
+            // Get Google User details
             $googleUser = Socialite::driver('google')->user();
 
-            // Check if the voter exists in our database
+            // Check if the voter exists in the VOTERS table
             $voter = Voter::where('email', $googleUser->getEmail())->first();
 
             if ($voter) {
-                // ✅ Voter found → Log them in
-                Auth::login($voter);
+                // ✅ Ensure that google_id is updated (so voter can log in again next time)
+                $voter->update([
+                    'google_id' => $googleUser->getId(), // Store Google ID
+                    'last_login_at' => now() // Update last login timestamp
+                ]);
 
-                // ✅ Update last login timestamp
-                $voter->update(['last_login_at' => now()]);
+                // ✅ Log in the voter using the voter guard
+                Auth::guard('voter')->login($voter);
 
                 return redirect()->route('dashboard')->with('success', 'Login successful!');
             } else {
-                // ❌ Voter not found → Return with error message
                 return redirect()->route('login')->withErrors([
-                    'email' => 'Your email is not registered in the voting system.'
+                    'email' => 'Your email is not registered in the voter system.'
                 ]);
             }
         } catch (\Exception $e) {
-            // ❌ Error handling (e.g., network error, API failure)
             return redirect()->route('login')->withErrors([
                 'google_auth' => 'Google authentication failed. Please try again.'
             ]);
         }
     }
+
 }

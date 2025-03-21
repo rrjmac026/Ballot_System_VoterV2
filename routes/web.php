@@ -16,23 +16,13 @@ Route::get('auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->na
 Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 // ✅ Protected Routes (Only Authenticated Voters Can Access)
-Route::middleware(['auth'])->group(function () {
-    
-    // 📌 Voter Dashboard
+Route::middleware(['auth:voter', 'maintenance'])->group(function () {
     Route::get('/dashboard', [VoterDashboardController::class, 'index'])->name('dashboard');
-
-    
-
-    // 📌 Voting Routes
     Route::get('/voting', [VotingController::class, 'index'])->name('voter.voting');
     Route::post('/voting', [VotingController::class, 'store'])->name('voter.voting.store');
     Route::get('/voting/confirmation', [VotingController::class, 'confirmation'])->name('voter.voting.confirmation');
-
-    // 📌 Profile Management (Edit, Update, Delete)
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 // ✅ Include Authentication Routes (Login, Logout)
 require __DIR__.'/auth.php';
