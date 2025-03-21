@@ -6,141 +6,57 @@
     <title>BUKSU COMELEC: Student Voting System</title>
     <link rel="icon" href="{{ asset('images/tab_Icon.png') }}" type="image/x-icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style>
-        body {
-            background-image: url("{{ asset('images/background.jpg') }}");
-            background-size: cover;
-            background-position: center;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .login-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .login-container img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-
-        .login-container h2 {
-            font-size: 22px;
-            font-weight: bold;
-            color: #240A34;
-        }
-
-        .login-container span {
-            color: #FC9D22;
-        }
-
-        .login-container input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .login-container button {
-            background-color: #240A34;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            width: 100%;
-        }
-
-        .login-container button:hover {
-            transform: scale(1.05);
-        }
-
-        .google-login {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-
-        .google-login img {
-            width: 20px;
-            margin-right: 8px;
-        }
-
-        .google-login:hover {
-            background-color: #f0f0f0;
-        }
-    </style>
 </head>
 
-<body>
-    <div class="login-container">
-        <div class="flex justify-center items-center mb-4">
-            <img src="{{ asset('images/logo.jpg') }}">
-            <h2 class="ml-2">Buk<span>SU</span> COMELEC</h2>
+<body class="bg-cover bg-center w-full min-h-screen flex justify-center items-center p-4" style="background-image: url('{{ asset('images/background.jpg') }}')">
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <div class="fixed top-5 right-5 p-4 rounded-lg shadow-lg w-[calc(100%-2rem)] sm:w-[400px] flex items-center gap-3 bg-red-100 border border-red-200 text-red-700 z-50 animate-slide-in" role="alert">
+                <svg class="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />
+                </svg>
+                <div class="flex-1">
+                    <p class="text-xs sm:text-sm leading-relaxed">{{ $error }}</p>
+                </div>
+                <button type="button" class="p-1 hover:opacity-100 opacity-70 transition-opacity" onclick="this.parentElement.remove()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        @endforeach
+    @endif
+
+    @if(session('status'))
+        <div class="fixed top-5 right-5 p-4 rounded-lg shadow-lg w-[calc(100%-2rem)] sm:w-[400px] flex items-center gap-3 bg-green-100 border border-green-200 text-green-700 z-50 animate-slide-in" role="alert">
+            <svg class="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+            </svg>
+            <div class="flex-1">
+                <p class="text-xs sm:text-sm leading-relaxed">{{ session('status') }}</p>
+            </div>
+            <button type="button" class="p-1 hover:opacity-100 opacity-70 transition-opacity" onclick="this.parentElement.remove()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    @endif
+
+    <div class="bg-white/95 rounded-2xl shadow-lg p-4 sm:p-8 w-full sm:w-[400px] mx-4 text-center">
+        <div class="flex flex-col sm:flex-row items-center justify-center mb-3 gap-2 sm:gap-0">
+            <img src="{{ asset('images/logo.jpg') }}" alt="BUKSU Logo" class="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-full border-2 border-[#240A34]">
+            <h2 class="text-xl sm:text-2xl font-bold text-[#240A34] sm:ml-3">Buk<span class="text-[#FC9D22]">SU</span> COMELEC</h2>
         </div>
 
-        <!-- Session Status -->
-        @if(session('status'))
-            <p class="text-green-500 text-sm mb-3">{{ session('status') }}</p>
-        @endif
+        <p class="text-gray-600 mb-4 text-sm sm:text-base">Login using your Google account</p>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-            
-            <p class="text-sm text-[#002D74] mb-1 text-left">Student ID</p>
-            <input type="text" name="student_number" placeholder="Enter your Student Number" 
-                value="{{ old('student_number') }}" required autofocus>
-            @error('student_number') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
-
-            <p class="text-sm text-[#002D74] mt-3 mb-1 text-left">Passkey</p>
-            <input type="password" name="passkey" placeholder="Enter your Passkey" required>
-            @error('passkey') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
-
-            <!-- Remember Me -->
-            <div class="flex justify-start mt-3">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-[#240A34]" name="remember">
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-            
-            <button type="submit" class="mt-4">Login</button>
-        </form>
-
-        <!-- Google Login Button -->
-        <a href="{{ route('google.login', 'voter') }}" class="google-login mt-4">
-            <img src="{{ asset('images/google-logo.png') }}">
+        <a href="{{ route('google.login') }}" class="flex items-center justify-center bg-white border border-gray-300 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg cursor-pointer transition-all duration-300 hover:bg-gray-100 text-sm sm:text-base font-bold w-full">
+            <img src="{{ asset('images/google-logo.png') }}" alt="Google Logo" class="w-5 sm:w-6 mr-2 sm:mr-3">
             Login with Google
         </a>
     </div>
-
-    <!-- Show session messages -->
-    @if(session('status'))
-        <script>
-            alert("{{ session('status') }}");
-        </script>
-    @endif
 </body>
 </html>

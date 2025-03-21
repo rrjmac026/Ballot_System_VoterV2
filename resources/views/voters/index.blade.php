@@ -1,4 +1,4 @@
-<x-layouts.voter>
+<x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex items-center">
@@ -10,21 +10,26 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if(session('error'))
+                <div class="bg-red-100 dark:bg-red-800 border-l-4 border-red-500 text-red-700 dark:text-red-300 p-4 mb-4 rounded-lg shadow-sm">
+                    <p class="font-bold"><i class="fas fa-exclamation-circle mr-2"></i> {{ session('error') }}</p>
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="bg-green-100 dark:bg-green-800 border-l-4 border-green-500 text-green-700 dark:text-green-300 p-4 mb-4 rounded-lg shadow-sm">
+                    <p class="font-bold"><i class="fas fa-check-circle mr-2"></i> {{ session('success') }}</p>
+                </div>
+            @endif
+
             @if($hasVoted)
-                <div class="bg-yellow-100 dark:bg-yellow-800 border-l-4 border-yellow-500 text-yellow-700 dark:text-yellow-300 p-4 mb-4 rounded-lg shadow-sm" role="alert">
+                <div class="bg-yellow-100 dark:bg-yellow-800 border-l-4 border-yellow-500 text-yellow-700 dark:text-yellow-300 p-4 mb-4 rounded-lg shadow-sm">
                     <div class="flex items-center">
                         <i class="fas fa-exclamation-circle mr-2"></i>
                         <p class="font-bold">You have already cast your vote.</p>
                     </div>
                 </div>
             @else
-                <!-- <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 text-blue-700 dark:text-blue-300 p-4 mb-6 rounded-lg shadow-sm">
-                    <div class="flex items-center">
-                        <i class="fas fa-info-circle mr-2"></i>
-                        <p>Please select one candidate for each position. Your vote is important!</p>
-                    </div>
-                </div> -->
-
                 <form method="POST" action="{{ route('voter.voting.store') }}" id="votingForm">
                     @csrf
                     <div class="space-y-6">
@@ -105,4 +110,4 @@
             @endif
         </div>
     </div>
-</x-layouts.voter>
+</x-app-layout>

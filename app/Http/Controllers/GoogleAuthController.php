@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
+use App\Models\Voter;
 use Illuminate\Support\Facades\Auth;
 
 class GoogleAuthController extends Controller
 {
     /**
-     * Redirect to Google for authentication.
+     * Redirect voter to Google for authentication.
      */
     public function redirectToGoogle()
     {
@@ -18,36 +18,36 @@ class GoogleAuthController extends Controller
     }
 
     /**
-     * Handle Google's callback.
+     * Handle Google's callback and validate voter credentials.
      */
     public function handleGoogleCallback()
     {
         try {
+            // Get voter details from Google
             $googleUser = Socialite::driver('google')->user();
 
-            // Find user by email
-            $user = User::where('email', $googleUser->getEmail())->first();
+            // Check if the voter exists in our database
+            $voter = Voter::where('email', $googleUser->getEmail())->first();
 
-            if (!$user) {
-                // Create new user if not found
-                $user = User::create([
-                    'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'google_id' => $googleUser->getId(),
-                    'password' => null, // No password needed for Google login
-                    'role' => 'voter', // Set default role
+            if ($voter) {
+                // ✅ Voter found → Log them in
+                Auth::login($voter);
+
+                // ✅ Update last login timestamp
+                $voter->update(['last_login_at' => now()]);
+
+                return redirect()->route('dashboard')->with('success', 'Login successful!');
+            } else {
+                // ❌ Voter not found → Return with error message
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Your email is not registered in the voting system.'
                 ]);
             }
-
-            // Log in the user
-            Auth::login($user);
-
-            // Redirect to the voter dashboard
-            return redirect()->route('voter.dashboard');
-
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Google authentication failed.');
+            // ❌ Error handling (e.g., network error, API failure)
+            return redirect()->route('login')->withErrors([
+                'google_auth' => 'Google authentication failed. Please try again.'
+            ]);
         }
     }
 }
-

@@ -17,13 +17,14 @@ class Voter extends Authenticatable
 
     protected $fillable = [
         'name',
+        'sex',
         'student_number',
         'email',
+        'google_id',
         'college_id',
         'course',
         'year_level',
         'status',
-        'passkey'
     ];
 
     protected $hidden = [
@@ -32,43 +33,39 @@ class Voter extends Authenticatable
     ];
 
     /**
-     * Get the password for authentication.
-     */
-    public function getAuthPassword()
-    {
-        return $this->passkey;  // Changed from attributes['passkey']
-    }
-
-    /**
-     * Get the column name for the "remember me" token.
-     */
-    public function getRememberTokenName()
-    {
-        return 'remember_token';
-    }
-
-    /**
-     * Get the login username to be used by the controller.
+     * Define authentication field as email (used for Google Login)
      */
     public function username()
     {
-        return 'student_number';
+        return 'email';
     }
 
     /**
-     * Override the default password column name
+     * Disable password authentication (Google OAuth users don't have passwords)
      */
-    public function getAuthPasswordName()
+    public function getAuthPassword()
     {
-        return 'passkey';
+        return null; // ✅ Prevents Laravel from looking for a password
     }
 
     /**
-     * Mutator to automatically hash the passkey
+     * Get the name of the unique identifier for the user.
+     *
+     * @return string
      */
-    public function setPasskeyAttribute($value)
+    public function getAuthIdentifierName()
     {
-        $this->attributes['passkey'] = bcrypt($value);
+        return 'voter_id'; // Make sure this matches your primary key column
+    }
+
+    /**
+     * Get the unique identifier for the user.
+     *
+     * @return mixed
+     */
+    public function getAuthIdentifier()
+    {
+        return $this->{$this->getAuthIdentifierName()};
     }
 
     public function college()
