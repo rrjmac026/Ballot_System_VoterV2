@@ -14,6 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
+    <body onload="window.history.forward();">
     <body class="font-sans antialiased h-full transition-colors duration-200 
     bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">

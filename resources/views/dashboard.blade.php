@@ -88,7 +88,7 @@
             <div class="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                 <h3 class="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Quick Actions</h3>
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <a href="{{ route('voter.voting') }}" 
+                    <a href="{{ route('voter.voting') }}"  
                         class="flex items-center p-4 text-gray-700 bg-gray-100 rounded-lg hover:bg-[#240A34] hover:text-white transition-colors duration-200">
                         <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
