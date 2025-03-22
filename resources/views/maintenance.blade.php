@@ -54,8 +54,7 @@
                         System Under Maintenance
                     </h2>
                     <p class="text-gray-300 text-sm sm:text-base">
-                        We're currently performing scheduled maintenance to improve your voting experience. 
-                        We'll be back shortly.
+                    {{ $message }}
                     </p>
                 </div>
 
