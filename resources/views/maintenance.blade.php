@@ -75,9 +75,9 @@
                     <p class="text-gray-300 text-sm">
                         If you need immediate assistance, please contact:
                     </p>
-                    <a href="mailto:comelec@buksu.edu.ph" 
+                    <a href="mailto:buksucomelec@buksu.edu.ph" 
                         class="text-[#FC9D22] hover:text-[#FC9D22]/80 transition-colors duration-200 text-sm mt-1 inline-block">
-                        comelec@buksu.edu.ph
+                        buksucomelec@buksu.edu.ph
                     </a>
                 </div>
             </div>
