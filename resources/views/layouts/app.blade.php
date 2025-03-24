@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
+      class="h-full"
+      :class="{ 'dark': darkMode }">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,25 +16,36 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body onload="window.history.forward();">
-    <body class="font-sans antialiased h-full transition-colors duration-200 
-    bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900" 
+             x-data="{ 
+                sidebarCollapsed: false,
+                darkMode: localStorage.getItem('theme') === 'dark' 
+             }"
+             x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light'))">
+            <!-- Navigation -->
+            <x-navigation />
+            
+            <!-- Sidebar -->
+            <x-sidebar />
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            <!-- Main Content -->
+            <div class="transition-all duration-300 mt-16"
+                 :class="{'pl-64': !sidebarCollapsed, 'pl-0': sidebarCollapsed}">
+                <!-- Page Content -->
+                <main class="dark:bg-gray-900">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
+
+        <script>
+            // On page load or when changing themes, best practice for dark mode
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        </script>
     </body>
 </html>

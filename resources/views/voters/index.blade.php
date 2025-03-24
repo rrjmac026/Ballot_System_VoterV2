@@ -109,11 +109,9 @@
 
                         <div class="flex justify-end mt-6">
                             <button type="submit" 
-                                class="inline-flex items-center px-6 py-3 bg-purple-600 dark:bg-purple-500 text-white font-medium rounded-lg 
-                                    hover:bg-purple-700 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 
-                                    focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all duration-200 shadow-sm">
-                                <i class="fas fa-paper-plane mr-2"></i>
-                                Cast Vote
+                                class="inline-flex justify-center items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                <i class="fas fa-save mr-2"></i>
+                                Submit Vote
                             </button>
                         </div>
                     </div>
