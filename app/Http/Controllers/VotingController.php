@@ -11,6 +11,18 @@ use Illuminate\Support\Facades\DB;
 
 class VotingController extends Controller
 {
+    private function generateTransactionNumber() 
+    {
+        do {
+            $prefix = 'TXN';
+            $date = now()->format('Ymd');
+            $random = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+            $transactionNumber = "{$prefix}-{$date}-{$random}";
+        } while (CastedVote::where('transaction_number', $transactionNumber)->exists());
+        
+        return $transactionNumber;
+    }
+
     /**
      * Show the voting page.
      */
@@ -35,42 +47,45 @@ class VotingController extends Controller
     {
         $voter = Auth::user(); 
 
-        // ✅ Prevent duplicate voting
-        if (CastedVote::where('voter_id', $voter->voter_id)->exists()) {
-            return back()->with('error', 'You have already voted. Multiple votes are not allowed.');
-        }
-
-        // ✅ Validate the request
-        $request->validate([
-            'votes' => ['required', 'array'],
-            'votes.*' => ['required', 'exists:candidates,candidate_id']
-        ]);
-
-        // ✅ Begin transaction to ensure atomicity
         DB::beginTransaction();
         try {
+            if (CastedVote::where('voter_id', $voter->voter_id)->exists()) {
+                throw new \Exception('You have already voted. Multiple votes are not allowed.');
+            }
+
+            $request->validate([
+                'votes' => ['required', 'array'],
+                'votes.*' => ['required', 'exists:candidates,candidate_id']
+            ]);
+
+            $transactionNumber = $this->generateTransactionNumber();
+
             foreach ($request->votes as $positionId => $candidateId) {
-                CastedVote::create([
-                    'voter_id' => $voter->voter_id,
-                    'position_id' => $positionId,
-                    'candidate_id' => $candidateId,
-                    'vote_hash' => CastedVote::hashVote($candidateId),
-                    'voted_at' => now()
-                ]);
+                try {
+                    CastedVote::create([
+                        'voter_id' => $voter->voter_id,
+                        'position_id' => $positionId,
+                        'candidate_id' => $candidateId,
+                        'vote_hash' => CastedVote::hashVote($candidateId),
+                        'voted_at' => now(),
+                        'transaction_number' => $transactionNumber
+                    ]);
+                } catch (\Illuminate\Database\QueryException $e) {
+                    throw new \Exception('You can only vote once per position.');
+                }
             }
 
             DB::commit();
-            return redirect()->route('voter.voting.confirmation')->with('success', 'Your vote has been successfully submitted!');
+            return redirect()->route('voter.voting.confirmation')
+                ->with('success', 'Your vote has been successfully submitted!')
+                ->with('transaction_number', $transactionNumber);
+
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // ✅ Log the exact error
             \Log::error('Voting Error: ' . $e->getMessage());
-
-            return back()->with('error', 'An error occurred while casting your vote. Please try again.');
+            return back()->with('error', $e->getMessage());
         }
     }
-
 
     /**
      * Show vote confirmation page.

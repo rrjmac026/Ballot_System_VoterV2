@@ -20,7 +20,8 @@ class CastedVote extends Model
         'position_id',
         'candidate_id', 
         'vote_hash',
-        'voted_at'
+        'voted_at',
+        'transaction_number'
     ];
 
     protected $dates = ['voted_at'];
