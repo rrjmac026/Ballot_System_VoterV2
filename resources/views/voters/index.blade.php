@@ -29,6 +29,9 @@
                         <p class="font-bold">You have already cast your vote.</p>
                     </div>
                 </div>
+                <div class="flex justify-center">
+                    <img src="{{ asset('images/peaceOut.gif') }}" alt="Vote" class="w-1/2 mx-auto mt-6 rounded-lg shadow-lg">
+                </div>
             @else
                 <div class="mb-8">
                     <div class="flex items-center justify-center">
