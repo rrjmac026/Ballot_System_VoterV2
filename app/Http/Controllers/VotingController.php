@@ -30,6 +30,19 @@ class VotingController extends Controller
     }
 
     /**
+     * Generate transaction number via AJAX
+     */
+    public function generateTransaction()
+    {
+        try {
+            $transactionNumber = $this->generateTransactionNumber();
+            return response()->json(['transaction_number' => $transactionNumber]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Show the voting page.
      */
     public function index()
@@ -52,49 +65,47 @@ class VotingController extends Controller
     public function store(Request $request)
     {
         $voter = Auth::user(); 
+        $now = now();
 
         DB::beginTransaction();
         try {
-            // Check if voter already voted
             if (CastedVote::where('voter_id', $voter->voter_id)->exists()) {
-                throw new \Exception('You have already voted. Multiple votes are not allowed.');
+                throw new \Exception('You have already voted.');
             }
 
-            $request->validate([
-                'votes' => ['required', 'array'],
-                'votes.*' => ['required', 'exists:candidates,candidate_id']
-            ]);
+            $transactionNumber = $request->transaction_number;
 
-            // Generate one transaction number for all votes
-            $transactionNumber = $this->generateTransactionNumber();
-            $now = now();
+            // Record voter access even without votes
+            $baseRecord = [
+                'voter_id' => $voter->voter_id,
+                'transaction_number' => $transactionNumber,
+                'voted_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
 
-            // Prepare all votes with the same transaction number
-            $votesToInsert = [];
-            foreach ($request->votes as $positionId => $candidateId) {
-                $votesToInsert[] = [
-                    'voter_id' => $voter->voter_id,
-                    'position_id' => $positionId,
-                    'candidate_id' => $candidateId,
-                    'vote_hash' => CastedVote::hashVote($candidateId),
-                    'voted_at' => $now,
-                    'transaction_number' => $transactionNumber,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ];
+            if (!empty($request->votes)) {
+                $votesToInsert = [];
+                foreach ($request->votes as $positionId => $candidateId) {
+                    $votesToInsert[] = array_merge($baseRecord, [
+                        'position_id' => $positionId,
+                        'candidate_id' => $candidateId,
+                        'vote_hash' => CastedVote::hashVote($candidateId),
+                    ]);
+                }
+                CastedVote::insert($votesToInsert);
+            } else {
+                // Create a record with just transaction number for tracking
+                CastedVote::create($baseRecord);
             }
-
-            // Insert all votes at once
-            CastedVote::insert($votesToInsert);
 
             DB::commit();
             return redirect()->route('voter.voting.confirmation')
-                ->with('success', 'Your vote has been successfully submitted!')
+                ->with('success', 'Your ballot has been recorded.')
                 ->with('transaction_number', $transactionNumber);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Voting Error: ' . $e->getMessage());
             return back()->with('error', $e->getMessage());
         }
     }

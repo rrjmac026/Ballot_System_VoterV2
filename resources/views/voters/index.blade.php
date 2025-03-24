@@ -48,6 +48,7 @@
 
                 <form method="POST" action="{{ route('voter.voting.store') }}" id="votingForm">
                     @csrf
+                    <input type="hidden" name="transaction_number" id="transaction_number_input" value="">
                     <div id="step1" class="space-y-6">
                         @foreach($positions as $position)
                             @php
@@ -280,12 +281,6 @@
                         document.getElementById('step1-indicator').classList.remove('bg-purple-600');
                     }
 
-                    function generateTransactionNumber() {
-                        const timestamp = new Date().getTime();
-                        const random = Math.floor(Math.random() * 1000);
-                        return `TXN-${timestamp}-${random}`;
-                    }
-
                     function getSelectedCandidates() {
                         const selectedCandidates = [];
                         const inputs = document.querySelectorAll('input[type="radio"]:checked');
@@ -302,27 +297,59 @@
                         return selectedCandidates;
                     }
 
-                    function showConfirmationModal() {
-                        const selectedCandidates = getSelectedCandidates();
-                        const modal = document.getElementById('confirmationModal');
-                        const candidatesContainer = document.getElementById('selectedCandidates');
-                        const transactionNumber = generateTransactionNumber();
-                        
-                        document.getElementById('transactionNumber').textContent = transactionNumber;
-                        candidatesContainer.innerHTML = '';
+                    async function showConfirmationModal() {
+                        try {
+                            // Get transaction number from server
+                            const response = await fetch('{{ route("voter.generate-transaction") }}');
+                            if (!response.ok) {
+                                throw new Error('Failed to connect to server');
+                            }
 
-                        selectedCandidates.forEach(candidate => {
-                            const candidateElement = document.createElement('div');
-                            candidateElement.className = 'p-3 bg-gray-50 dark:bg-gray-700 rounded-lg';
-                            candidateElement.innerHTML = `
-                                <h4 class="font-semibold text-gray-900 dark:text-white">${candidate.position}</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">${candidate.candidateName}</p>
-                                <span class="text-xs text-indigo-600 dark:text-indigo-400">${candidate.partylist}</span>
-                            `;
-                            candidatesContainer.appendChild(candidateElement);
-                        });
+                            const data = await response.json();
+                            if (!data.transaction_number) {
+                                throw new Error('Invalid server response');
+                            }
 
-                        modal.classList.remove('hidden');
+                            // Get selected candidates
+                            const selectedCandidates = getSelectedCandidates();
+                            const modal = document.getElementById('confirmationModal');
+                            const candidatesContainer = document.getElementById('selectedCandidates');
+                            const transactionInput = document.getElementById('transaction_number_input');
+
+                            // Update transaction number
+                            transactionInput.value = data.transaction_number;
+                            document.getElementById('transactionNumber').textContent = data.transaction_number;
+
+                            // Clear and update candidates container
+                            candidatesContainer.innerHTML = '';
+                            if (selectedCandidates.length === 0) {
+                                candidatesContainer.innerHTML = `
+                                    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
+                                        <p class="text-yellow-600 dark:text-yellow-400 text-center">
+                                            <i class="fas fa-info-circle mr-2"></i>
+                                            No candidates selected. Your participation will still be recorded.
+                                        </p>
+                                    </div>
+                                `;
+                            } else {
+                                selectedCandidates.forEach(candidate => {
+                                    const candidateElement = document.createElement('div');
+                                    candidateElement.classList.add('p-3', 'bg-gray-50', 'dark:bg-gray-700', 'rounded-lg');
+                                    candidateElement.innerHTML = `
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">${candidate.position}</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">${candidate.candidateName}</p>
+                                        <span class="text-xs text-indigo-600 dark:text-indigo-400">${candidate.partylist}</span>
+                                    `;
+                                    candidatesContainer.appendChild(candidateElement);
+                                });
+                            }
+
+                            // Show modal
+                            modal.classList.remove('hidden');
+                        } catch (error) {
+                            console.error('Modal Error:', error);
+                            alert('Failed to prepare confirmation. Please try again.');
+                        }
                     }
 
                     function closeConfirmationModal() {

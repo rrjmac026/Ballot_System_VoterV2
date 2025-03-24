@@ -21,8 +21,8 @@ Route::middleware(['auth:voter', 'maintenance'])->group(function () {
     Route::get('/voting', [VotingController::class, 'index'])->name('voter.voting');
     Route::post('/voting', [VotingController::class, 'store'])->name('voter.voting.store');
     Route::get('/voting/confirmation', [VotingController::class, 'confirmation'])->name('voter.voting.confirmation');
+    Route::get('/voting/generate-transaction', [VotingController::class, 'generateTransaction'])->name('voter.generate-transaction');
 });
-
 
 // ✅ Include Authentication Routes (Login, Logout)
 require __DIR__.'/auth.php';
