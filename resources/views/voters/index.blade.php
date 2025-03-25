@@ -53,80 +53,67 @@
                     @csrf
                     <input type="hidden" name="transaction_number" id="transaction_number_input" value="">
                     <div id="step1" class="space-y-6">
-                        @foreach($positions as $position)
-                            @php
-                                $isGlobalPosition = in_array($position->name, ['President', 'Vice President', 'Senator']);
-                            @endphp
-                            
-                            @if($isGlobalPosition)
-                                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700">
-                                    <div class="p-6">
-                                        <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
-                                            @if($position->name === 'President')
-                                                <i class="fas fa-star text-yellow-500 mr-2"></i>
-                                            @elseif($position->name === 'Vice President')
-                                                <i class="fas fa-award text-blue-500 mr-2"></i>
-                                            @else
-                                                <i class="fas fa-user-tie text-purple-500 mr-2"></i>
-                                            @endif
-                                            {{ $position->name }} 
-                                            @if(!$isGlobalPosition)
-                                                <span class="ml-2 text-xs px-2 py-1 bg-gray-300 dark:bg-gray-700 rounded-full">
-                                                    College-Based
-                                                </span>
-                                            @endif
-                                        </h3>
+                        @foreach($globalPositions as $position)
+                            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700">
+                                <div class="p-6">
+                                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
+                                        @if($position->name === 'President')
+                                            <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                        @elseif($position->name === 'Vice President')
+                                            <i class="fas fa-award text-blue-500 mr-2"></i>
+                                        @else
+                                            <i class="fas fa-user-tie text-purple-500 mr-2"></i>
+                                        @endif
+                                        {{ $position->name }} 
+                                    </h3>
 
-                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                            @foreach($position->candidates as $candidate)
-                                                @if($isGlobalPosition || $candidate->college_id == Auth::user()->college_id)
-                                                    <div class="relative">
-                                                        <input type="radio" 
-                                                            name="votes[{{ $position->position_id }}]" 
-                                                            value="{{ $candidate->candidate_id }}"
-                                                            id="candidate_{{ $candidate->candidate_id }}"
-                                                            class="peer hidden"
-                                                            required>
-                                                        <label for="candidate_{{ $candidate->candidate_id }}" 
-                                                            class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
-                                                                transition-all duration-200 ease-in-out
-                                                                peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
-                                                                hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                            <div class="flex flex-col items-center space-y-4">
-                                                                <!-- Candidate Photo -->
-                                                                <div class="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                                                                    <img src="{{ $candidate->photo_url }}" 
-                                                                        alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
-                                                                        class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
-                                                                        onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
-                                                                </div>
-                                                                <div class="text-center">
-                                                                    <span class="font-medium text-gray-900 dark:text-white block">
-                                                                        {{ $candidate->last_name }}, {{ $candidate->first_name }} {{ $candidate->middle_name }}
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        @foreach($position->candidates as $candidate)
+                                            <div class="relative">
+                                                <input type="radio" 
+                                                    name="votes[{{ $position->position_id }}]" 
+                                                    value="{{ $candidate->candidate_id }}"
+                                                    id="candidate_{{ $candidate->candidate_id }}"
+                                                    class="peer hidden"
+                                                    required>
+                                                <label for="candidate_{{ $candidate->candidate_id }}" 
+                                                    class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
+                                                        transition-all duration-200 ease-in-out
+                                                        peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
+                                                        hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                    <div class="flex flex-col items-center space-y-4">
+                                                        <!-- Candidate Photo -->
+                                                        <div class="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                                                            <img src="{{ $candidate->photo_url }}" 
+                                                                alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
+                                                                class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
+                                                                onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <span class="font-medium text-gray-900 dark:text-white block">
+                                                                {{ $candidate->last_name }}, {{ $candidate->first_name }} {{ $candidate->middle_name }}
+                                                            </span>
+                                                            <div class="flex flex-col items-center gap-2 mt-2">
+                                                                @if($candidate->partylist)
+                                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
+                                                                        {{ $candidate->partylist->name }}
                                                                     </span>
-                                                                    <div class="flex flex-col items-center gap-2 mt-2">
-                                                                        @if($candidate->partylist)
-                                                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
-                                                                                {{ $candidate->partylist->name }}
-                                                                            </span>
-                                                                        @endif
-                                                                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                                                                            {{ $candidate->course }}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
+                                                                @endif
+                                                                <span class="text-sm text-gray-500 dark:text-gray-400">
+                                                                    {{ $candidate->course }}
+                                                                </span>
                                                             </div>
-                                                            <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-purple-600 dark:text-purple-400 transition-opacity duration-200">
-                                                                <i class="fas fa-check-circle"></i>
-                                                            </div>
-                                                        </label>
+                                                        </div>
                                                     </div>
-                                                @endif
-                                            @endforeach
-                                        </div>
+                                                    <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-purple-600 dark:text-purple-400 transition-opacity duration-200">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                            @endif
+                            </div>
                         @endforeach
 
                         <div class="flex justify-end mt-6">
@@ -140,80 +127,66 @@
                     </div>
 
                     <div id="step2" class="space-y-6 hidden">
-                        @foreach($positions as $position)
-                            @php
-                                $isGlobalPosition = in_array($position->name, ['President', 'Vice President', 'Senator']);
-                            @endphp
-                            
-                            @if(!$isGlobalPosition)
-                                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700">
-                                    <div class="p-6">
-                                        <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
-                                            @if($position->name === 'President')
-                                                <i class="fas fa-star text-yellow-500 mr-2"></i>
-                                            @elseif($position->name === 'Vice President')
-                                                <i class="fas fa-award text-blue-500 mr-2"></i>
-                                            @else
-                                                <i class="fas fa-user-tie text-purple-500 mr-2"></i>
-                                            @endif
-                                            {{ $position->name }} 
-                                            @if(!$isGlobalPosition)
-                                                <span class="ml-2 text-xs px-2 py-1 bg-gray-300 dark:bg-gray-700 rounded-full">
-                                                    College-Based
-                                                </span>
-                                            @endif
-                                        </h3>
+                        @foreach($collegePositions as $position)
+                            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700">
+                                <div class="p-6">
+                                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
+                                        <i class="fas fa-user-tie text-purple-500 mr-2"></i>
+                                        {{ $position->name }} 
+                                        <span class="ml-2 text-xs px-2 py-1 bg-gray-300 dark:bg-gray-700 rounded-full">
+                                            College-Based
+                                        </span>
+                                    </h3>
 
-                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                            @foreach($position->candidates as $candidate)
-                                                @if($isGlobalPosition || $candidate->college_id == Auth::user()->college_id)
-                                                    <div class="relative">
-                                                        <input type="radio" 
-                                                            name="votes[{{ $position->position_id }}]" 
-                                                            value="{{ $candidate->candidate_id }}"
-                                                            id="candidate_{{ $candidate->candidate_id }}"
-                                                            class="peer hidden"
-                                                            required>
-                                                        <label for="candidate_{{ $candidate->candidate_id }}" 
-                                                            class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
-                                                                transition-all duration-200 ease-in-out
-                                                                peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
-                                                                hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                            <div class="flex flex-col items-center space-y-4">
-                                                                <!-- Candidate Photo -->
-                                                                <div class="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                                                                    <img src="{{ $candidate->photo_url }}" 
-                                                                        alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
-                                                                        class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
-                                                                        onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
-                                                                </div>
-                                                                <div class="text-center">
-                                                                    <span class="font-medium text-gray-900 dark:text-white block">
-                                                                        {{ $candidate->last_name }}, {{ $candidate->first_name }} {{ $candidate->middle_name }}
-                                                                    </span>
-                                                                    <div class="flex flex-col items-center gap-2 mt-2">
-                                                                        @if($candidate->partylist)
-                                                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
-                                                                                {{ $candidate->partylist->name }}
-                                                                            </span>
-                                                                        @endif
-                                                                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                                                                            {{ $candidate->course }}
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        @foreach($position->candidates as $candidate)
+                                            @if($candidate->college_id == Auth::user()->college_id)
+                                                <div class="relative">
+                                                    <input type="radio" 
+                                                        name="votes[{{ $position->position_id }}]" 
+                                                        value="{{ $candidate->candidate_id }}"
+                                                        id="candidate_{{ $candidate->candidate_id }}"
+                                                        class="peer hidden"
+                                                        required>
+                                                    <label for="candidate_{{ $candidate->candidate_id }}" 
+                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
+                                                            transition-all duration-200 ease-in-out
+                                                            peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
+                                                            hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                        <div class="flex flex-col items-center space-y-4">
+                                                            <!-- Candidate Photo -->
+                                                            <div class="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                                                                <img src="{{ $candidate->photo_url }}" 
+                                                                    alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
+                                                                    class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
+                                                                    onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <span class="font-medium text-gray-900 dark:text-white block">
+                                                                    {{ $candidate->last_name }}, {{ $candidate->first_name }} {{ $candidate->middle_name }}
+                                                                </span>
+                                                                <div class="flex flex-col items-center gap-2 mt-2">
+                                                                    @if($candidate->partylist)
+                                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
+                                                                            {{ $candidate->partylist->name }}
                                                                         </span>
-                                                                    </div>
+                                                                    @endif
+                                                                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                                                                        {{ $candidate->course }}
+                                                                    </span>
                                                                 </div>
                                                             </div>
-                                                            <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-purple-600 dark:text-purple-400 transition-opacity duration-200">
-                                                                <i class="fas fa-check-circle"></i>
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                @endif
-                                            @endforeach
-                                        </div>
+                                                        </div>
+                                                        <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-purple-600 dark:text-purple-400 transition-opacity duration-200">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            @endif
+                                        @endforeach
                                     </div>
                                 </div>
-                            @endif
+                            </div>
                         @endforeach
 
                         <div class="flex justify-between mt-6">

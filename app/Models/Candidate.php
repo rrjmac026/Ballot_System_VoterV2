@@ -67,4 +67,11 @@ class Candidate extends Model
         }
         return asset('images/default-avatar.png');
     }
+
+    public function getCastedVotesCountAttribute()
+    {
+        return DB::table('casted_votes')
+            ->whereRaw("JSON_SEARCH(votes, 'one', ?)", [$this->candidate_id])
+            ->count();
+    }
 }

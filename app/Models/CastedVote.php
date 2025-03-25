@@ -17,8 +17,7 @@ class CastedVote extends Model
 
     protected $fillable = [
         'voter_id',
-        'position_id',
-        'candidate_id', 
+        'votes', // Store votes as JSON
         'vote_hash',
         'voted_at',
         'transaction_number'
@@ -26,9 +25,13 @@ class CastedVote extends Model
 
     protected $dates = ['voted_at'];
 
-    public static function hashVote($candidate_id)
+    protected $casts = [
+        'votes' => 'array',
+    ];
+
+    public static function hashVote($votes)
     {
-        return Hash::make($candidate_id . env('APP_KEY'));
+        return Hash::make(json_encode($votes) . env('APP_KEY'));
     }
 
     public function voter()

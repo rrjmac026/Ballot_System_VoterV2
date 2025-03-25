@@ -29,9 +29,6 @@ class VotingController extends Controller
         return "{$prefix}-{$date}-{$nextNumber}";
     }
 
-    /**
-     * Generate transaction number via AJAX
-     */
     public function generateTransaction()
     {
         try {
@@ -42,26 +39,46 @@ class VotingController extends Controller
         }
     }
 
-    /**
-     * Show the voting page.
-     */
     public function index()
     {
-        // Ensure user is authenticated
-        $voter = Auth::user();  // ✅ No need for guard('voter')
-
-        // Check if voter has already voted
+        $voter = Auth::user();  
         $hasVoted = CastedVote::where('voter_id', $voter->voter_id)->exists();
+        $castedVote = CastedVote::where('voter_id', $voter->voter_id)->first();
+        $votes = $castedVote ? json_decode($castedVote->votes, true) : [];
 
-        // Get all positions with their candidates (Eager Loading for efficiency)
-        $positions = Position::with(['candidates.partylist', 'candidates.organization'])->get();
+        // Get voter's year level as number
+        $voterYear = (int)str_replace(['st', 'nd', 'rd', 'th'], '', $voter->year_level);
 
-        return view('voters.index', compact('positions', 'hasVoted')); // ✅ Corrected View Path
+        // Define position IDs
+        $globalPositionIds = [1, 2, 3]; // President, VP, Senator
+        $representativePositionIds = [12, 13, 14]; // 2nd, 3rd, 4th Year Representatives
+        $collegeOfficerPositionIds = [4, 5, 6, 7, 8, 9, 10, 11]; // Governor to PRO
+
+        // Get global positions
+        $globalPositions = Position::whereIn('position_id', $globalPositionIds)
+            ->with(['candidates.partylist', 'candidates.organization'])
+            ->orderBy('position_id')
+            ->get();
+
+        // Get college positions including officers and representatives
+        $collegePositions = Position::query()
+            ->where(function($query) use ($collegeOfficerPositionIds, $representativePositionIds, $voterYear) {
+                // Include college officers (Governor, Vice Gov, etc)
+                $query->whereIn('position_id', $collegeOfficerPositionIds);
+
+                // Add representative position based on year level
+                if ($voterYear < 4) {
+                    $allowedRepId = $voterYear + 11; // Maps to correct representative ID (12, 13, 14)
+                    $query->orWhere('position_id', $allowedRepId);
+                }
+            })
+            ->with(['candidates.partylist', 'candidates.organization'])
+            ->orderBy('position_id')
+            ->get();
+
+        return view('voters.index', compact('globalPositions', 'collegePositions', 'votes', 'hasVoted'));
     }
 
-    /**
-     * Store voter's votes.
-     */
     public function store(Request $request)
     {
         $voter = Auth::user(); 
@@ -74,30 +91,22 @@ class VotingController extends Controller
             }
 
             $transactionNumber = $request->transaction_number;
+            $votes = [];
+            if (!empty($request->votes)) {
+                foreach ($request->votes as $positionId => $candidateId) {
+                    $votes[$positionId] = $candidateId;
+                }
+            }
 
-            // Record voter access even without votes
-            $baseRecord = [
+            CastedVote::create([
                 'voter_id' => $voter->voter_id,
+                'votes' => json_encode($votes),
+                'vote_hash' => CastedVote::hashVote($votes),
                 'transaction_number' => $transactionNumber,
                 'voted_at' => $now,
                 'created_at' => $now,
                 'updated_at' => $now,
-            ];
-
-            if (!empty($request->votes)) {
-                $votesToInsert = [];
-                foreach ($request->votes as $positionId => $candidateId) {
-                    $votesToInsert[] = array_merge($baseRecord, [
-                        'position_id' => $positionId,
-                        'candidate_id' => $candidateId,
-                        'vote_hash' => CastedVote::hashVote($candidateId),
-                    ]);
-                }
-                CastedVote::insert($votesToInsert);
-            } else {
-                // Create a record with just transaction number for tracking
-                CastedVote::create($baseRecord);
-            }
+            ]);
 
             DB::commit();
             return redirect()->route('voter.voting.confirmation')
@@ -110,11 +119,12 @@ class VotingController extends Controller
         }
     }
 
-    /**
-     * Show vote confirmation page.
-     */
     public function confirmation()
     {
-        return view('voters.confirmation');
+        $voter = Auth::user();
+        $castedVote = CastedVote::where('voter_id', $voter->voter_id)->first();
+        $votes = $castedVote ? json_decode($castedVote->votes, true) : [];
+
+        return view('voters.confirmation', compact('votes'));
     }
 }

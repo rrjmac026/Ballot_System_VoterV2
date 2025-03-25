@@ -19,9 +19,10 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900" 
              x-data="{ 
-                sidebarCollapsed: false,
+                sidebarCollapsed: window.innerWidth < 768,
                 darkMode: localStorage.getItem('theme') === 'dark' 
              }"
+             @resize.window="sidebarCollapsed = window.innerWidth < 768"
              x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light'))">
             <!-- Navigation -->
             <x-navigation />
