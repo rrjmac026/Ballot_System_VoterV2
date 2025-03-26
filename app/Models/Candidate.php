@@ -63,9 +63,9 @@ class Candidate extends Model
     public function getPhotoUrlAttribute()
     {
         if ($this->photo) {
-            return Storage::disk('public')->url('candidates/' . $this->photo);
+            return asset('images/candidates/' . $this->photo);
         }
-        return asset('images/default-avatar.png');
+        return asset('images/candidates/default-avatar.png');
     }
 
     public function getCastedVotesCountAttribute()
