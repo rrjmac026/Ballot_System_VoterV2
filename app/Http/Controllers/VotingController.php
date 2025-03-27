@@ -13,20 +13,12 @@ class VotingController extends Controller
 {
     private function generateTransactionNumber() 
     {
-        $prefix = 'TXN';
-        $date = now()->format('Ymd');
-        $lastTransaction = CastedVote::whereDate('created_at', today())
-            ->orderBy('transaction_number', 'desc')
-            ->first();
-
-        if ($lastTransaction) {
-            $lastNumber = intval(substr($lastTransaction->transaction_number, -4));
-            $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-        } else {
-            $nextNumber = '0001';
-        }
-
-        return "{$prefix}-{$date}-{$nextNumber}";
+        $voter = Auth::user();
+        $prefix = 'BUKSU';
+        $year = now()->format('Y');
+        $paddedId = str_pad($voter->voter_id, 4, '0', STR_PAD_LEFT);
+        
+        return "{$prefix}-{$year}-{$paddedId}";
     }
 
     public function generateTransaction()
@@ -90,23 +82,23 @@ class VotingController extends Controller
                 throw new \Exception('You have already voted.');
             }
 
-            $transactionNumber = $request->transaction_number;
-            $votes = [];
+            $transactionNumber = $this->generateTransactionNumber();
+
+            // Store each vote separately
             if (!empty($request->votes)) {
                 foreach ($request->votes as $positionId => $candidateId) {
-                    $votes[$positionId] = $candidateId;
+                    CastedVote::create([
+                        'transaction_number' => $transactionNumber,
+                        'voter_id' => $voter->voter_id,
+                        'position_id' => $positionId,
+                        'candidate_id' => $candidateId,
+                        'vote_hash' => CastedVote::hashVote($candidateId),
+                        'voted_at' => $now,
+                        'ip_address' => $request->ip(),
+                        'user_agent' => $request->userAgent()
+                    ]);
                 }
             }
-
-            CastedVote::create([
-                'voter_id' => $voter->voter_id,
-                'votes' => json_encode($votes),
-                'vote_hash' => CastedVote::hashVote($votes),
-                'transaction_number' => $transactionNumber,
-                'voted_at' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
 
             DB::commit();
             return redirect()->route('voter.voting.confirmation')
@@ -122,8 +114,9 @@ class VotingController extends Controller
     public function confirmation()
     {
         $voter = Auth::user();
-        $castedVote = CastedVote::where('voter_id', $voter->voter_id)->first();
-        $votes = $castedVote ? json_decode($castedVote->votes, true) : [];
+        $votes = CastedVote::where('voter_id', $voter->voter_id)
+            ->with(['position', 'candidate.partylist'])
+            ->get();
 
         return view('voters.confirmation', compact('votes'));
     }
