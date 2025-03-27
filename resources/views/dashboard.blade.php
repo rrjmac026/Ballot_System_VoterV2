@@ -132,18 +132,28 @@
                             <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex-shrink-0">
-                                        <img src="{{ $vote->candidate->photo_url }}" 
-                                            class="w-16 h-16 rounded-lg object-cover"
-                                            alt="{{ $vote->candidate->first_name }}">
+                                        @if($vote->candidate)
+                                            <img src="{{ $vote->candidate->photo_url }}" 
+                                                class="w-16 h-16 rounded-lg object-cover"
+                                                alt="{{ $vote->candidate->first_name }}">
+                                        @else
+                                            <div class="w-16 h-16 rounded-lg bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                                                <i class="fas fa-user-alt text-gray-400 dark:text-gray-500 text-2xl"></i>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-gray-900 dark:text-white">
                                             {{ $vote->position->name }}
                                         </p>
                                         <p class="text-base font-semibold text-gray-800 dark:text-gray-200">
-                                            {{ $vote->candidate->last_name }}, {{ $vote->candidate->first_name }}
+                                            @if($vote->candidate)
+                                                {{ $vote->candidate->last_name }}, {{ $vote->candidate->first_name }}
+                                            @else
+                                                <span class="text-gray-500 italic">No vote cast</span>
+                                            @endif
                                         </p>
-                                        @if($vote->candidate->partylist)
+                                        @if($vote->candidate && $vote->candidate->partylist)
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
                                                 {{ $vote->candidate->partylist->name }}
                                             </span>
