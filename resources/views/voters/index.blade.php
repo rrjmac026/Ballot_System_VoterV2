@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex items-center">
-                <i class="fas fa-university mr-2"></i>
+        <div class="flex items-center justify-center">
+            <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight flex items-center">
+                <i class="fas fa-university mr-2 text-2xl"></i>
                 {{ Auth::user()->college->name ?? 'Student Body Organization' }} SBO Candidates
             </h2>
         </div>
@@ -56,18 +56,18 @@
                         @foreach($globalPositions as $position)
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700">
                                 <div class="p-6">
-                                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
+                                    <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center justify-center">
                                         @if($position->name === 'President')
-                                            <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                            <i class="fas fa-star text-yellow-500 mr-2 text-xl"></i>
                                         @elseif($position->name === 'Vice President')
-                                            <i class="fas fa-award text-blue-500 mr-2"></i>
+                                            <i class="fas fa-award text-blue-500 mr-2 text-xl"></i>
                                         @else
-                                            <i class="fas fa-user-tie text-purple-500 mr-2"></i>
+                                            <i class="fas fa-user-tie text-purple-500 mr-2 text-xl"></i>
                                         @endif
                                         {{ $position->name }} 
                                     </h3>
 
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
                                         @foreach($position->candidates as $candidate)
                                             <div class="relative">
                                                 <input type="radio" 
@@ -83,7 +83,7 @@
                                                         hover:bg-gray-100 dark:hover:bg-gray-700">
                                                     <div class="flex flex-col items-center space-y-4">
                                                         <!-- Candidate Photo -->
-                                                        <div class="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                                                        <div class="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
                                                             <img src="{{ $candidate->photo_url }}" 
                                                                 alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
                                                                 class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
@@ -130,15 +130,15 @@
                         @foreach($collegePositions as $position)
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700">
                                 <div class="p-6">
-                                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center">
-                                        <i class="fas fa-user-tie text-purple-500 mr-2"></i>
+                                    <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center justify-center">
+                                        <i class="fas fa-user-tie text-purple-500 mr-2 text-xl"></i>
                                         {{ $position->name }} 
                                         <span class="ml-2 text-xs px-2 py-1 bg-gray-300 dark:bg-gray-700 rounded-full">
                                             College-Based
                                         </span>
                                     </h3>
 
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
                                         @foreach($position->candidates as $candidate)
                                             @if($candidate->college_id == Auth::user()->college_id)
                                                 <div class="relative">
@@ -155,7 +155,7 @@
                                                             hover:bg-gray-100 dark:hover:bg-gray-700">
                                                         <div class="flex flex-col items-center space-y-4">
                                                             <!-- Candidate Photo -->
-                                                            <div class="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                                                            <div class="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
                                                                 <img src="{{ $candidate->photo_url }}" 
                                                                     alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
                                                                     class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"

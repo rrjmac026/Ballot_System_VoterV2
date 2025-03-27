@@ -61,12 +61,11 @@
                     </div>
                     <!-- Image/Illustration -->
                     <div class="relative">
-                        <img src="{{ asset('images/tab_Icon.png') }}" alt="BukSU Comelec" class="w-full max-w-lg mx-auto">
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#FC9D22]/20 to-transparent rounded-xl"></div>
+                        <img src="{{ asset('images/tab_icon.png') }}" alt="BukSU Comelec" class="w-full rounded-xl shadow-lg">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-xl"></div>                    </div>
                     </div>
                 </div>
             </div>
-        </div>
 
         <!-- Footer -->
         <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
