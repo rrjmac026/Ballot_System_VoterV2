@@ -111,7 +111,7 @@
             <!-- Voting Details Modal -->
             @if($castedVotes->count())
             <div id="votingDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full" style="z-index: 100;">
-                <div class="relative top-20 mx-auto p-6 border w-full max-w-2xl shadow-lg rounded-md bg-white dark:bg-gray-800">
+                <div class="relative top-20 mx-auto p-6 border w-full max-w-5xl shadow-lg rounded-md bg-white dark:bg-gray-800">
                     <div class="mb-4">
                         <div class="flex justify-between items-center">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Your Voting Details</h3>
@@ -127,7 +127,7 @@
                         </p>
                     </div>
                     
-                    <div class="space-y-4 mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         @foreach($castedVotes as $vote)
                             <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div class="flex items-center space-x-4">
