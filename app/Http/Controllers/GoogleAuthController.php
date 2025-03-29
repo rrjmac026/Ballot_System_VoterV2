@@ -14,7 +14,9 @@ class GoogleAuthController extends Controller
      */
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')
+            ->with(['prompt' => 'select_account'])
+            ->redirect();
     }
 
     /**
@@ -50,6 +52,21 @@ class GoogleAuthController extends Controller
                 'google_auth' => 'Google authentication failed. Please try again.'
             ]);
         }
+    }
+
+    public function switchAccount()
+    {
+        // Clear existing sessions
+        Auth::guard('voter')->logout();
+        session()->flush();
+        
+        // Redirect to Google with correct OAuth parameters
+        return Socialite::driver('google')
+            ->with([
+                'prompt' => 'select_account',
+                'access_type' => 'offline'
+            ])
+            ->redirect();
     }
 
 }

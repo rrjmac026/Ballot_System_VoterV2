@@ -46,15 +46,9 @@
                         </x-dropdown-link>
 
                         <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
+                        <a href="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            {{ __('Log Out') }}
+                        </a>
                     </x-slot>
                 </x-dropdown>
             </div>
@@ -95,16 +89,10 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
+                <!-- Mobile Authentication -->
+                <a href="{{ route('logout') }}" class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
+                    {{ __('Log Out') }}
+                </a>
             </div>
         </div>
     </div>

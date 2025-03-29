@@ -7,6 +7,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
@@ -15,6 +19,35 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <script>
+            // Aggressive back prevention
+            window.location.hash="no-back-button";
+            window.location.hash="Again-No-back-button"; 
+            window.onhashchange=function(){window.location.hash="no-back-button";}
+            
+            window.onload = function() {
+                // Prevent back/forward 
+                window.history.pushState(null, null, window.location.href);
+                window.onpopstate = function() {
+                    window.history.go(1);
+                };
+            }
+
+            // Force reload on back attempt
+            window.onpageshow = function(event) {
+                if (event.persisted) {
+                    window.location.reload(true);
+                }
+            };
+
+            // Disable back space key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === "Backspace" && !e.target.matches("input, textarea")) {
+                    e.preventDefault();
+                }
+            });
+        </script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900" 

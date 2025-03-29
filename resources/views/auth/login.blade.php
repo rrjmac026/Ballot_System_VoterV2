@@ -6,6 +6,17 @@
     <title>BUKSU COMELEC: Student Voting System</title>
     <link rel="icon" href="{{ asset('images/tab_Icon.png') }}" type="image/x-icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        // Force clear all storage on login page
+        localStorage.clear();
+        sessionStorage.clear();
+        document.cookie.split(';').forEach(function(c) {
+            document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+        });
+    </script>
 </head>
 
 <body class="bg-cover bg-center w-full min-h-screen flex justify-center items-center p-4" style="background-image: url('{{ asset('images/background.jpg') }}')">
