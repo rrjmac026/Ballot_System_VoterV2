@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\VoterDashboardController;
 use App\Http\Controllers\VotingController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\LogoutController;
+use Illuminate\Support\Facades\Route;
 
 // ✅ Welcome Page
 Route::get('/', function () {
@@ -28,4 +27,4 @@ Route::middleware(['auth:voter', 'maintenance'])->group(function () {
 });
 
 // ✅ Include Authentication Routes (Login, Logout)
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

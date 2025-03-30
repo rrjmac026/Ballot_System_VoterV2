@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
       class="h-full"
       :class="{ 'dark': darkMode }">
     <head>
@@ -17,17 +17,20 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- flowbite -->
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <script>
             // Aggressive back prevention
             window.location.hash="no-back-button";
-            window.location.hash="Again-No-back-button"; 
+            window.location.hash="Again-No-back-button";
             window.onhashchange=function(){window.location.hash="no-back-button";}
-            
+
             window.onload = function() {
-                // Prevent back/forward 
+                // Prevent back/forward
                 window.history.pushState(null, null, window.location.href);
                 window.onpopstate = function() {
                     window.history.go(1);
@@ -50,16 +53,16 @@
         </script>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900" 
-             x-data="{ 
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900"
+             x-data="{
                 sidebarCollapsed: window.innerWidth < 768,
-                darkMode: localStorage.getItem('theme') === 'dark' 
+                darkMode: localStorage.getItem('theme') === 'dark'
              }"
              @resize.window="sidebarCollapsed = window.innerWidth < 768"
              x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light'))">
             <!-- Navigation -->
             <x-navigation />
-            
+
             <!-- Sidebar -->
             <x-sidebar />
 
