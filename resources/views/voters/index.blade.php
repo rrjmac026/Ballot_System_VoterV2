@@ -10,6 +10,71 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- How to Vote Guide Modal -->
+            <div id="howToVoteModal" class="fixed inset-0 bg-[#1f2525]/50 backdrop-blur-sm z-50 overflow-y-auto hidden"> <!-- Added hidden class here -->
+                <div class="relative top-10 mx-auto p-6 border w-full max-w-2xl shadow-lg rounded-2xl bg-[#ede9e4] dark:bg-[#380041]">
+                    <!-- Add absolute positioned close button -->
+                    <button onclick="closeGuideModal()" 
+                            class="absolute top-3 right-3 text-[#1f2525] dark:text-[#ede9e4] hover:text-[#f9b40f] transition-colors duration-200">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                    
+                    <div class="mt-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-2xl font-bold text-[#380041] dark:text-[#ede9e4]">
+                                <i class="fas fa-info-circle text-[#f9b40f] mr-2"></i>
+                                How to Vote
+                            </h3>
+                            <button onclick="closeGuideModal()" class="text-[#1f2525] dark:text-[#ede9e4] hover:text-[#f9b40f]">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="mt-6 space-y-6">
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-8 h-8 rounded-full bg-[#f9b40f] text-[#ede9e4] flex items-center justify-center flex-shrink-0">1</div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-[#380041] dark:text-[#f9b40f]">Select Your Candidates</h4>
+                                        <p class="text-[#1f2525] dark:text-[#ede9e4]/90">Click on the candidate card to select your choice for each position. You can only select one candidate per position.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-8 h-8 rounded-full bg-[#f9b40f] text-[#ede9e4] flex items-center justify-center flex-shrink-0">2</div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-[#380041] dark:text-[#f9b40f]">Review Your Choices</h4>
+                                        <p class="text-[#1f2525] dark:text-[#ede9e4]/90">Double-check your selections before submitting. Use the 'Reselect' button if you need to change your vote.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-8 h-8 rounded-full bg-[#f9b40f] text-[#ede9e4] flex items-center justify-center flex-shrink-0">3</div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-[#380041] dark:text-[#f9b40f]">Submit Your Vote</h4>
+                                        <p class="text-[#1f2525] dark:text-[#ede9e4]/90">Once you're satisfied with your choices, click 'Submit' to cast your vote. Remember, you can only vote once!</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 p-4 bg-[#1f2525]/5 dark:bg-[#ede9e4]/5 rounded-lg">
+                                <p class="text-sm text-[#380041] dark:text-[#ede9e4]">
+                                    <i class="fas fa-exclamation-triangle text-[#f9b40f] mr-2"></i>
+                                    Important: Your vote is confidential and cannot be changed once submitted.
+                                </p>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button onclick="closeGuideModal()" 
+                                    class="px-6 py-2 bg-[#f9b40f] text-[#ede9e4] rounded-lg hover:bg-[#380041] transition-colors duration-200">
+                                    Got it!
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @if(session('error'))
                 <div class="bg-red-100 dark:bg-red-800 border-l-4 border-red-500 text-red-700 dark:text-red-300 p-4 mb-4 rounded-lg shadow-sm">
                     <p class="font-bold"><i class="fas fa-exclamation-circle mr-2"></i> {{ session('error') }}</p>
@@ -56,16 +121,25 @@
                         @foreach($globalPositions as $position)
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700">
                                 <div class="p-6">
-                                    <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center justify-center">
-                                        @if($position->name === 'President')
-                                            <i class="fas fa-star text-yellow-500 mr-2 text-xl"></i>
-                                        @elseif($position->name === 'Vice President')
-                                            <i class="fas fa-award text-blue-500 mr-2 text-xl"></i>
-                                        @else
-                                            <i class="fas fa-user-tie text-purple-500 mr-2 text-xl"></i>
-                                        @endif
-                                        {{ $position->name }} 
-                                    </h3>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                                            @if($position->name === 'President')
+                                                <i class="fas fa-star text-yellow-500 mr-2 text-xl"></i>
+                                            @elseif($position->name === 'Vice President')
+                                                <i class="fas fa-award text-blue-500 mr-2 text-xl"></i>
+                                            @else
+                                                <i class="fas fa-user-tie text-purple-500 mr-2 text-xl"></i>
+                                            @endif
+                                            {{ $position->name }}
+                                        </h3>
+                                        
+                                        <!-- Add Reset Button -->
+                                        <button type="button" 
+                                                onclick="clearSelection('{{ $position->position_id }}')"
+                                                class="text-sm px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-purple-500 hover:text-white transition-colors duration-200 flex items-center">
+                                            <i class="fas fa-redo-alt mr-1"></i> Reselect
+                                        </button>
+                                    </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
                                         @foreach($position->candidates as $candidate)
@@ -130,13 +204,22 @@
                         @foreach($collegePositions as $position)
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700">
                                 <div class="p-6">
-                                    <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center justify-center">
-                                        <i class="fas fa-user-tie text-purple-500 mr-2 text-xl"></i>
-                                        {{ $position->name }} 
-                                        <span class="ml-2 text-xs px-2 py-1 bg-gray-300 dark:bg-gray-700 rounded-full">
-                                            College-Based
-                                        </span>
-                                    </h3>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                                            <i class="fas fa-user-tie text-purple-500 mr-2 text-xl"></i>
+                                            {{ $position->name }}
+                                            <span class="ml-2 text-xs px-2 py-1 bg-gray-300 dark:bg-gray-700 rounded-full">
+                                                College-Based
+                                            </span>
+                                        </h3>
+                                        
+                                        <!-- Add Reset Button -->
+                                        <button type="button" 
+                                                onclick="clearSelection('{{ $position->position_id }}')"
+                                                class="text-sm px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-purple-500 hover:text-white transition-colors duration-200 flex items-center">
+                                            <i class="fas fa-redo-alt mr-1"></i> Reselect
+                                        </button>
+                                    </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
                                         @foreach($position->candidates as $candidate)
@@ -333,9 +416,75 @@
                     }
 
                     function submitVote() {
+                        // Set voted status in all storage methods
+                        localStorage.setItem('hasVoted', 'true');
+                        document.cookie = "has_voted=true; path=/; max-age=2592000"; // 30 days
+                        
+                        // Remove guide shown flag as it's no longer needed
+                        localStorage.removeItem('guideShown');
+                        
                         document.getElementById('votingForm').submit();
                     }
+
+                    function clearSelection(positionId) {
+                        // Find all radio buttons for this position
+                        const radioButtons = document.querySelectorAll(`input[name="votes[${positionId}]"]`);
+                        
+                        // Uncheck all radio buttons for this position
+                        radioButtons.forEach(radio => {
+                            radio.checked = false;
+                        });
+
+                        // Visual feedback (optional)
+                        const message = document.createElement('div');
+                        message.className = 'fixed bottom-4 right-4 bg-purple-600 text-white px-4 py-2 rounded-md shadow-lg z-50 animate-fade-in-out';
+                        message.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Selection cleared';
+                        document.body.appendChild(message);
+
+                        // Remove the message after 2 seconds
+                        setTimeout(() => {
+                            message.remove();
+                        }, 2000);
+                    }
+
+                    // Update the guide modal show logic
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Only show guide on first visit and if not voted
+                        if (!{{ $hasVoted ? 'true' : 'false' }} && !sessionStorage.getItem('hasSeenGuide')) {
+                            document.getElementById('howToVoteModal').classList.remove('hidden');
+                            sessionStorage.setItem('hasSeenGuide', 'true');
+                        }
+                    });
+
+                    function closeGuideModal() {
+                        const modal = document.getElementById('howToVoteModal');
+                        modal.classList.add('animate-fade-out');
+                        setTimeout(() => {
+                            modal.classList.add('hidden');
+                        }, 300);
+                    }
                 </script>
+
+                <style>
+                    @keyframes fade-in-out {
+                        0% { opacity: 0; transform: translateY(20px); }
+                        10% { opacity: 1; transform: translateY(0); }
+                        90% { opacity: 1; transform: translateY(0); }
+                        100% { opacity: 0; transform: translateY(-20px); }
+                    }
+
+                    .animate-fade-in-out {
+                        animation: fade-in-out 2s ease-in-out;
+                    }
+
+                    @keyframes fade-out {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                    .animate-fade-out {
+                        animation: fade-out 0.3s ease-out;
+                    }
+                </style>
             @endif
         </div>
     </div>

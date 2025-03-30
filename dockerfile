@@ -1,5 +1,8 @@
 FROM php:8.2-apache
 
+# Set DNS servers using environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -24,8 +27,8 @@ RUN a2enmod rewrite
 # Set the ServerName to suppress warnings
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Get specific Composer version
+COPY --from=composer:2.6.5 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -37,9 +40,6 @@ COPY . .
 RUN composer install
 RUN npm install
 RUN npm run build
-RUN npm run build
-RUN npm run build
-
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
