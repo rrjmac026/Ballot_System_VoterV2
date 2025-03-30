@@ -123,27 +123,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const stars = document.querySelectorAll(".star");
-        const ratingInput = document.getElementById("ratingInput");
-
-        stars.forEach(star => {
-            star.addEventListener("click", function () {
-                let rating = this.getAttribute("data-value");
-                ratingInput.value = rating;
-
-                // Reset all stars to default gray
-                stars.forEach(s => s.classList.remove("text-yellow-300"));
-                stars.forEach(s => s.classList.add("text-gray-300"));
-
-                // Highlight selected stars
-                for (let i = 0; i < rating; i++) {
-                    stars[i].classList.remove("text-gray-300");
-                    stars[i].classList.add("text-yellow-300");
-                }
-            });
-        });
-    });
-</script>
