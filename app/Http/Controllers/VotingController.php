@@ -83,48 +83,58 @@ class VotingController extends Controller
             }
 
             $transactionNumber = $this->generateTransactionNumber();
-            $voterYear = (int)str_replace(['st', 'nd', 'rd', 'th'], '', $voter->year_level);
-
-            // Get all positions available to the voter
-            $globalPositionIds = [1, 2, 3]; // President, VP, Senator
-            $collegeOfficerPositionIds = [4, 5, 6, 7, 8, 9, 10, 11]; // Governor to PRO
             
-            $availablePositions = collect($globalPositionIds)
-                ->merge($collegeOfficerPositionIds);
-                
-            // Add year representative position if applicable
-            if ($voterYear < 4) {
-                $allowedRepId = $voterYear + 11; // Maps to correct representative ID (12, 13, 14)
-                $availablePositions->push($allowedRepId);
-            }
+            // Get all available positions
+            $availablePositions = $this->getAvailablePositions($voter);
+            
+            // Initialize votes array if null
+            $votes = $request->votes ?? [];
 
-            // If no votes submitted, create abstain records for all positions
-            if (empty($request->votes)) {
-                foreach ($availablePositions as $positionId) {
+            // Process all positions (voted and abstained)
+            foreach ($availablePositions as $positionId) {
+                if (!isset($votes[$positionId])) {
+                    // Handle abstain vote
                     CastedVote::create([
                         'transaction_number' => $transactionNumber,
                         'voter_id' => $voter->voter_id,
                         'position_id' => $positionId,
-                        'candidate_id' => null,
+                        'candidate_id' => null, // null for abstain
                         'vote_hash' => CastedVote::hashVote("abstain-{$positionId}"),
                         'voted_at' => $now,
                         'ip_address' => $request->ip(),
                         'user_agent' => $request->userAgent()
                     ]);
-                }
-            } else {
-                // For partial voting, create records for both voted and abstained positions
-                foreach ($availablePositions as $positionId) {
-                    CastedVote::create([
-                        'transaction_number' => $transactionNumber,
-                        'voter_id' => $voter->voter_id,
-                        'position_id' => $positionId,
-                        'candidate_id' => $request->votes[$positionId] ?? null,
-                        'vote_hash' => CastedVote::hashVote($request->votes[$positionId] ?? "abstain-{$positionId}"),
-                        'voted_at' => $now,
-                        'ip_address' => $request->ip(),
-                        'user_agent' => $request->userAgent()
-                    ]);
+                } else {
+                    // Handle actual votes
+                    $candidateIds = $votes[$positionId];
+                    if ($positionId == 3) { // Senator position
+                        // Handle senator votes (array)
+                        $senatorIds = is_array($candidateIds) ? $candidateIds : [];
+                        foreach ($senatorIds as $candidateId) {
+                            CastedVote::create([
+                                'transaction_number' => $transactionNumber,
+                                'voter_id' => $voter->voter_id,
+                                'position_id' => $positionId,
+                                'candidate_id' => $candidateId,
+                                'vote_hash' => CastedVote::hashVote($candidateId),
+                                'voted_at' => $now,
+                                'ip_address' => $request->ip(),
+                                'user_agent' => $request->userAgent()
+                            ]);
+                        }
+                    } else {
+                        // Handle single position votes
+                        CastedVote::create([
+                            'transaction_number' => $transactionNumber,
+                            'voter_id' => $voter->voter_id,
+                            'position_id' => $positionId,
+                            'candidate_id' => $candidateIds,
+                            'vote_hash' => CastedVote::hashVote($candidateIds),
+                            'voted_at' => $now,
+                            'ip_address' => $request->ip(),
+                            'user_agent' => $request->userAgent()
+                        ]);
+                    }
                 }
             }
 
@@ -137,6 +147,23 @@ class VotingController extends Controller
             DB::rollBack();
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    private function getAvailablePositions($voter)
+    {
+        $globalPositionIds = [1, 2, 3]; // President, VP, Senator
+        $collegeOfficerPositionIds = [4, 5, 6, 7, 8, 9, 10, 11]; // Governor to PRO
+        
+        $positions = collect($globalPositionIds)
+            ->merge($collegeOfficerPositionIds);
+        
+        // Add year representative position if applicable
+        $voterYear = (int)str_replace(['st', 'nd', 'rd', 'th'], '', $voter->year_level);
+        if ($voterYear < 4) {
+            $positions->push($voterYear + 11); // Maps to correct representative ID
+        }
+        
+        return $positions->toArray();
     }
 
     public function confirmation()

@@ -141,49 +141,102 @@
                                         </button>
                                     </div>
 
+                                    @if($position->name === 'Senator')
+                                        <!-- Add senator count display -->
+                                        <div id="senatorCount" class="text-center mb-4 p-2 bg-[#380041]/10 rounded-lg">
+                                            <span class="font-bold text-[#380041] dark:text-[#ede9e4]">
+                                                Selected Senators: <span id="selectedCount">0</span>/12
+                                            </span>
+                                        </div>
+                                    @endif
+
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
                                         @foreach($position->candidates as $candidate)
-                                            <div class="relative">
-                                                <input type="radio" 
-                                                    name="votes[{{ $position->position_id }}]" 
-                                                    value="{{ $candidate->candidate_id }}"
-                                                    id="candidate_{{ $candidate->candidate_id }}"
-                                                    class="peer hidden"
-                                                    required>
-                                                <label for="candidate_{{ $candidate->candidate_id }}" 
-                                                    class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
-                                                        transition-all duration-200 ease-in-out
-                                                        peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
-                                                        hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                    <div class="flex flex-col items-center space-y-4">
-                                                        <!-- Candidate Photo -->
-                                                        <div class="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                                                            <img src="{{ $candidate->photo_url }}" 
-                                                                alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
-                                                                class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
-                                                                onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
-                                                        </div>
-                                                        <div class="text-center">
-                                                            <span class="font-medium text-gray-900 dark:text-white block">
-                                                                {{ $candidate->last_name }}, {{ $candidate->first_name }} {{ $candidate->middle_name }}
-                                                            </span>
-                                                            <div class="flex flex-col items-center gap-2 mt-2">
-                                                                @if($candidate->partylist)
-                                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
-                                                                        {{ $candidate->partylist->name }}
-                                                                    </span>
-                                                                @endif
-                                                                <span class="text-sm text-gray-500 dark:text-gray-400">
-                                                                    {{ $candidate->course }}
+                                            @if($position->name === 'Senator')
+                                                <div class="relative">
+                                                    <input type="checkbox" 
+                                                        name="votes[{{ $position->position_id }}][]" 
+                                                        value="{{ $candidate->candidate_id }}"
+                                                        id="candidate_{{ $candidate->candidate_id }}"
+                                                        class="peer hidden senator-checkbox"
+                                                        onchange="handleSenatorSelection(this)">
+                                                    <label for="candidate_{{ $candidate->candidate_id }}" 
+                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
+                                                            transition-all duration-200 ease-in-out
+                                                            peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
+                                                            hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                        <div class="flex flex-col items-center space-y-4">
+                                                            <!-- Candidate Photo -->
+                                                            <div class="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                                                                <img src="{{ $candidate->photo_url }}" 
+                                                                    alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
+                                                                    class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
+                                                                    onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <span class="font-medium text-gray-900 dark:text-white block">
+                                                                    {{ $candidate->last_name }}, {{ $candidate->first_name }} {{ $candidate->middle_name }}
                                                                 </span>
+                                                                <div class="flex flex-col items-center gap-2 mt-2">
+                                                                    @if($candidate->partylist)
+                                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
+                                                                            {{ $candidate->partylist->name }}
+                                                                        </span>
+                                                                    @endif
+                                                                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                                                                        {{ $candidate->course }}
+                                                                    </span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-purple-600 dark:text-purple-400 transition-opacity duration-200">
-                                                        <i class="fas fa-check-circle"></i>
-                                                    </div>
-                                                </label>
-                                            </div>
+                                                        <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-purple-600 dark:text-purple-400 transition-opacity duration-200">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            @else
+                                                <div class="relative">
+                                                    <input type="radio" 
+                                                        name="votes[{{ $position->position_id }}]" 
+                                                        value="{{ $candidate->candidate_id }}"
+                                                        id="candidate_{{ $candidate->candidate_id }}"
+                                                        class="peer hidden"
+                                                        required>
+                                                    <label for="candidate_{{ $candidate->candidate_id }}" 
+                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
+                                                            transition-all duration-200 ease-in-out
+                                                            peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
+                                                            hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                        <div class="flex flex-col items-center space-y-4">
+                                                            <!-- Candidate Photo -->
+                                                            <div class="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                                                                <img src="{{ $candidate->photo_url }}" 
+                                                                    alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
+                                                                    class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
+                                                                    onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <span class="font-medium text-gray-900 dark:text-white block">
+                                                                    {{ $candidate->last_name }}, {{ $candidate->first_name }} {{ $candidate->middle_name }}
+                                                                </span>
+                                                                <div class="flex flex-col items-center gap-2 mt-2">
+                                                                    @if($candidate->partylist)
+                                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
+                                                                            {{ $candidate->partylist->name }}
+                                                                        </span>
+                                                                    @endif
+                                                                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                                                                        {{ $candidate->course }}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="absolute top-2 right-2 opacity-0 peer-checked:opacity-100 text-purple-600 dark:text-purple-400 transition-opacity duration-200">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            @endif
                                         @endforeach
                                     </div>
                                 </div>
@@ -340,11 +393,26 @@
                         document.getElementById('step1-indicator').classList.remove('bg-purple-600');
                     }
 
+                    // Update getSelectedCandidates function to handle arrays
                     function getSelectedCandidates() {
                         const selectedCandidates = [];
-                        const inputs = document.querySelectorAll('input[type="radio"]:checked');
                         
-                        inputs.forEach(input => {
+                        // Handle senators separately
+                        const senatorCheckboxes = document.querySelectorAll('.senator-checkbox:checked');
+                        if (senatorCheckboxes.length > 0) {
+                            const senatorNames = Array.from(senatorCheckboxes).map(checkbox => {
+                                const label = document.querySelector(`label[for="${checkbox.id}"]`);
+                                return label.querySelector('.font-medium').textContent.trim();
+                            });
+                            selectedCandidates.push({
+                                position: 'Senator',
+                                candidateName: `Selected ${senatorNames.length} senators`,
+                                candidates: senatorNames
+                            });
+                        }
+
+                        // Handle other positions
+                        document.querySelectorAll('input[type="radio"]:checked').forEach(input => {
                             const label = document.querySelector(`label[for="${input.id}"]`);
                             const position = label.closest('.bg-white').querySelector('h3').textContent.trim();
                             const candidateName = label.querySelector('.font-medium').textContent.trim();
@@ -356,7 +424,12 @@
                         return selectedCandidates;
                     }
 
+                    // Update the confirmation modal display
                     async function showConfirmationModal() {
+                        if (!validateSenatorSelection()) {
+                            return;
+                        }
+
                         try {
                             // Get transaction number from server
                             const response = await fetch('{{ route("voter.generate-transaction") }}');
@@ -394,11 +467,24 @@
                                 selectedCandidates.forEach(candidate => {
                                     const candidateElement = document.createElement('div');
                                     candidateElement.classList.add('p-3', 'bg-gray-50', 'dark:bg-gray-700', 'rounded-lg');
-                                    candidateElement.innerHTML = `
-                                        <h4 class="font-semibold text-gray-900 dark:text-white">${candidate.position}</h4>
-                                        <p class="text-sm text-gray-600 dark:text-gray-300">${candidate.candidateName}</p>
-                                        <span class="text-xs text-indigo-600 dark:text-indigo-400">${candidate.partylist}</span>
-                                    `;
+                                    
+                                    if (candidate.position === 'Senator') {
+                                        candidateElement.innerHTML = `
+                                            <h4 class="font-semibold text-gray-900 dark:text-white">Senators (${candidate.candidates.length})</h4>
+                                            <div class="mt-2 space-y-1">
+                                                ${candidate.candidates.map(name => 
+                                                    `<p class="text-sm text-gray-600 dark:text-gray-300">• ${name}</p>`
+                                                ).join('')}
+                                            </div>
+                                        `;
+                                    } else {
+                                        candidateElement.innerHTML = `
+                                            <h4 class="font-semibold text-gray-900 dark:text-white">${candidate.position}</h4>
+                                            <p class="text-sm text-gray-600 dark:text-gray-300">${candidate.candidateName}</p>
+                                            <span class="text-xs text-indigo-600 dark:text-indigo-400">${candidate.partylist}</span>
+                                        `;
+                                    }
+                                    
                                     candidatesContainer.appendChild(candidateElement);
                                 });
                             }
@@ -427,13 +513,20 @@
                     }
 
                     function clearSelection(positionId) {
-                        // Find all radio buttons for this position
-                        const radioButtons = document.querySelectorAll(`input[name="votes[${positionId}]"]`);
+                        // Find all radio buttons or checkboxes for this position
+                        const inputs = document.querySelectorAll(`input[name="votes[${positionId}]"], input[name="votes[${positionId}][]"]`);
                         
-                        // Uncheck all radio buttons for this position
-                        radioButtons.forEach(radio => {
-                            radio.checked = false;
+                        // Uncheck all inputs for this position
+                        inputs.forEach(input => {
+                            input.checked = false;
+                            input.disabled = false;
+                            input.closest('label').classList.remove('opacity-50');
                         });
+
+                        // Update senator count if applicable
+                        if (positionId === 'Senator') {
+                            document.getElementById('selectedCount').textContent = 0;
+                        }
 
                         // Visual feedback (optional)
                         const message = document.createElement('div');
@@ -445,6 +538,34 @@
                         setTimeout(() => {
                             message.remove();
                         }, 2000);
+                    }
+
+                    function handleSenatorSelection(checkbox) {
+                        const selectedSenators = document.querySelectorAll('.senator-checkbox:checked').length;
+                        
+                        if (selectedSenators > 12) {
+                            checkbox.checked = false;
+                            alert('You can only select up to 12 senators');
+                            return;
+                        }
+
+                        document.getElementById('selectedCount').textContent = selectedSenators;
+
+                        // Disable remaining checkboxes if 12 are selected
+                        const senatorCheckboxes = document.querySelectorAll('.senator-checkbox:not(:checked)');
+                        senatorCheckboxes.forEach(cb => {
+                            cb.disabled = selectedSenators >= 12;
+                            cb.closest('label').classList.toggle('opacity-50', selectedSenators >= 12);
+                        });
+                    }
+
+                    function validateSenatorSelection() {
+                        const selectedSenators = document.querySelectorAll('.senator-checkbox:checked').length;
+                        if (selectedSenators > 12) {
+                            alert('You can select a maximum of 12 senators');
+                            return false;
+                        }
+                        return true;
                     }
 
                     // Update the guide modal show logic
