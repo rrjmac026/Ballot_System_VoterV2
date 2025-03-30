@@ -19,7 +19,8 @@
     </script>
 </head>
 
-<body class="bg-cover bg-center w-full min-h-screen flex justify-center items-center p-4" style="background-image: url('{{ asset('images/background.jpg') }}')">
+<body class="bg-cover bg-center bg-no-repeat w-full min-h-screen flex justify-center items-center p-4" 
+    style="background-image: url('{{ asset('images/background.jpg') }}'); background-size: 100% 100%;">
     @if ($errors->any())
         @foreach ($errors->all() as $error)
             <div class="fixed top-5 right-5 p-4 rounded-lg shadow-lg w-[calc(100%-2rem)] sm:w-[400px] flex items-center gap-3 bg-red-100 border border-red-200 text-red-700 z-50 animate-slide-in" role="alert">

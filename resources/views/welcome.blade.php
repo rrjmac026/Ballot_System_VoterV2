@@ -6,7 +6,8 @@
         <title>BukSU Comelec System</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased dark:bg-gray-900">
+    <body class="antialiased dark:bg-gray-900 bg-cover bg-center bg-no-repeat min-h-screen" 
+          style="background-image: url('{{ asset('images/background_0.jpg') }}'); background-size: 100% 100%;">
         <!-- Navigation -->
         @if (Route::has('login'))
             <nav class="fixed w-full z-20 top-0 start-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -16,12 +17,11 @@
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                             BukSU <span class="text-[#FC9D22]">Comelec</span>
                         </span>
-                    </a>
                     <div class="flex md:order-2 space-x-3">
                         @auth('voter')
                             <a href="{{ route('dashboard') }}" class="text-white bg-[#FC9D22] hover:bg-[#240A34] font-medium rounded-lg text-sm px-4 py-2 text-center transition-colors duration-200">Dashboard</a>
                         @else
-                            <a href="{{ route('google.login') }}" class="text-white bg-[#FC9D22] hover:bg-[#240A34] font-medium rounded-lg text-sm px-4 py-2 text-center transition-colors duration-200">
+                            <a href="{{ route('google.login') }}" class="text-white bg-[#FC9D22] hover:bg-[#240A34] foInt-medium rounded-lg text-sm px-4 py-2 text-center transition-colors duration-200">
                                 <i class="fab fa-google mr-2"></i>Login with Google
                             </a>
                         @endauth
