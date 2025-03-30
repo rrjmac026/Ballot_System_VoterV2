@@ -29,15 +29,76 @@
             <span x-show="!sidebarCollapsed">Vote Now</span>
         </a>
 
-        <form method="POST" action="{{ route('logout') }}" class="w-full">
-            @csrf
-            <button type="submit" 
-                    class="w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors duration-200 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span x-show="!sidebarCollapsed">Logout</span>
-            </button>
-        </form>
+        <!-- Logout Button -->
+        <button type="button" 
+                onclick="showLogoutModal()"
+                class="w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors duration-200 
+                       text-[#380041] dark:text-[#ede9e4] hover:text-[#f9b40f] dark:hover:text-[#f9b40f]
+                       hover:bg-[#380041]/10 dark:hover:bg-[#ede9e4]/10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span x-show="!sidebarCollapsed">Logout</span>
+        </button>
     </nav>
 </div>
+
+<!-- Logout Confirmation Modal -->
+<div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-[#380041]">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-[#380041]/10 dark:bg-[#ede9e4]/10">
+                <i class="fas fa-sign-out-alt text-[#380041] dark:text-[#ede9e4] text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-[#380041] dark:text-[#ede9e4] mt-4">Logout Confirmation</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-[#380041]/70 dark:text-[#ede9e4]/70">Are you sure you want to log out?</p>
+            </div>
+            <div class="flex justify-center mt-4 space-x-4">
+                <button onclick="closeLogoutModal()" 
+                    class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-[#380041] dark:text-[#ede9e4] 
+                           text-base font-medium rounded-md 
+                           hover:bg-[#380041]/10 dark:hover:bg-[#ede9e4]/10 
+                           hover:text-[#f9b40f] dark:hover:text-[#f9b40f]
+                           focus:outline-none focus:ring-2 focus:ring-[#380041] dark:focus:ring-[#ede9e4]">
+                    Cancel
+                </button>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" 
+                        class="px-4 py-2 bg-[#380041] dark:bg-[#ede9e4] text-[#ede9e4] dark:text-[#380041] 
+                               text-base font-medium rounded-md 
+                               hover:bg-[#f9b40f] dark:hover:bg-[#f9b40f]
+                               hover:text-[#ede9e4] dark:hover:text-[#380041]
+                               focus:outline-none focus:ring-2 focus:ring-[#f9b40f]">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showLogoutModal() {
+        document.getElementById('logoutModal').classList.remove('hidden');
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logoutModal').classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('logoutModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLogoutModal();
+        }
+    });
+
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !document.getElementById('logoutModal').classList.contains('hidden')) {
+            closeLogoutModal();
+        }
+    });
+</script>
