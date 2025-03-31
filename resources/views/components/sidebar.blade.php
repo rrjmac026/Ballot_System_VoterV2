@@ -40,6 +40,45 @@
             </svg>
             <span x-show="!sidebarCollapsed">Logout</span>
         </button>
+
+        <!-- Bible Quote Section -->
+        <div class="mt-8 p-4 border-t border-gray-200 dark:border-gray-700"
+             x-show="!sidebarCollapsed"
+             x-data="{ 
+                quote: '', 
+                reference: '',
+                async fetchQuote() {
+                    try {
+                        const response = await fetch('https://labs.bible.org/api/?passage=random&type=json');
+                        const data = await response.json();
+                        this.quote = data[0].text;
+                        this.reference = `${data[0].bookname} ${data[0].chapter}:${data[0].verse}`;
+                    } catch (error) {
+                        this.quote = 'Choose some wise, understanding and respected men from each of your tribes, and I will set them over you.';
+                        this.reference = 'Deuteronomy 1:13';
+                    }
+                },
+                initQuotes() {
+                    this.fetchQuote();
+                    setInterval(() => this.fetchQuote(), 20000);
+                }
+             }"
+             x-init="initQuotes()"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform -translate-x-4"
+             x-transition:enter-end="opacity-100 transform translate-x-0">
+            <div class="text-center">
+                <i class="fas fa-book-bible text-[#f9b40f] text-xl mb-2"></i>
+                <div class="animate-fade-in">
+                    <blockquote class="text-xs italic text-[#380041] dark:text-[#ede9e4]" x-text="quote"></blockquote>
+                    <cite class="text-xs text-[#f9b40f] mt-2 block" x-text="reference"></cite>
+                </div>
+                <button @click="fetchQuote()" 
+                        class="mt-2 text-xs text-[#380041]/50 dark:text-[#ede9e4]/50 hover:text-[#f9b40f] transition-colors duration-200">
+                    <i class="fas fa-sync-alt mr-1"></i> New Quote
+                </button>
+            </div>
+        </div>
     </nav>
 </div>
 
@@ -102,3 +141,14 @@
         }
     });
 </script>
+
+<style>
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+</style>
