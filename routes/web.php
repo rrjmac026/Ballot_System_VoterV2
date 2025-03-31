@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\FeedbackReviewsController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\VoterDashboardController;
 use App\Http\Controllers\VotingController;
@@ -21,6 +22,7 @@ Route::middleware(['auth:voter', 'maintenance'])->group(function () {
     Route::get('/dashboard', [VoterDashboardController::class, 'index'])->name('dashboard');
     Route::get('/voting', [VotingController::class, 'index'])->name('voter.voting');
     Route::post('/voting', [VotingController::class, 'store'])->name('voter.voting.store');
+    Route::post('/feedback', [FeedbackReviewsController::class, 'store'])->name('feedback.store');
     Route::get('/voting/confirmation', [VotingController::class, 'confirmation'])->name('voter.voting.confirmation');
     Route::get('/voting/generate-transaction', [VotingController::class, 'generateTransaction'])->name('voter.generate-transaction');
     Route::get('/force-logout', [LogoutController::class, 'logout'])->name('logout');

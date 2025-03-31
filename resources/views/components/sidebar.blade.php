@@ -35,6 +35,7 @@
         <span x-show="!sidebarCollapsed">Share Your Feedback</span>
         </button>
 
+
         <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
             <button type="submit"
@@ -66,9 +67,9 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <div class="p-9 md:p-5">
-                <form class="space-y-4" action="#">
-
+            <div class="p-5 md:p-5">
+                <form class="space-y-4" action="{{ route('feedback.store') }}" method="POST">
+                @csrf
                     <!-- ratings -->
                     <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Give us Star Rating!</label>
                     <div class="flex w-full justify-center items-center">
@@ -108,7 +109,7 @@
                     <!-- feedback messages here -->
                     <div>
                         <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your message</label>
-                        <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
+                        <textarea name="feedback" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
                     </div>
 
 

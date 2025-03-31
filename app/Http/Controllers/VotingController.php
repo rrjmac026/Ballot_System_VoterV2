@@ -1,23 +1,21 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Position;
-use App\Models\Candidate;
 use App\Models\CastedVote;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class VotingController extends Controller
 {
-    private function generateTransactionNumber() 
+    private function generateTransactionNumber()
     {
-        $voter = Auth::user();
-        $prefix = 'BUKSU';
-        $year = now()->format('Y');
+        $voter    = Auth::user();
+        $prefix   = 'BUKSU';
+        $year     = now()->format('Y');
         $paddedId = str_pad($voter->voter_id, 4, '0', STR_PAD_LEFT);
-        
+
         return "{$prefix}-{$year}-{$paddedId}";
     }
 
@@ -33,17 +31,17 @@ class VotingController extends Controller
 
     public function index()
     {
-        $voter = Auth::user();  
-        $hasVoted = CastedVote::where('voter_id', $voter->voter_id)->exists();
+        $voter      = Auth::user();
+        $hasVoted   = CastedVote::where('voter_id', $voter->voter_id)->exists();
         $castedVote = CastedVote::where('voter_id', $voter->voter_id)->first();
-        $votes = $castedVote ? json_decode($castedVote->votes, true) : [];
+        $votes      = $castedVote ? json_decode($castedVote->votes, true) : [];
 
         // Get voter's year level as number
-        $voterYear = (int)str_replace(['st', 'nd', 'rd', 'th'], '', $voter->year_level);
+        $voterYear = (int) str_replace(['st', 'nd', 'rd', 'th'], '', $voter->year_level);
 
-        // Define position IDs
-        $globalPositionIds = [1, 2, 3]; // President, VP, Senator
-        $representativePositionIds = [12, 13, 14]; // 2nd, 3rd, 4th Year Representatives
+                                                                 // Define position IDs
+        $globalPositionIds         = [1, 2, 3];                  // President, VP, Senator
+        $representativePositionIds = [12, 13, 14];               // 2nd, 3rd, 4th Year Representatives
         $collegeOfficerPositionIds = [4, 5, 6, 7, 8, 9, 10, 11]; // Governor to PRO
 
         // Get global positions
@@ -54,7 +52,7 @@ class VotingController extends Controller
 
         // Get college positions including officers and representatives
         $collegePositions = Position::query()
-            ->where(function($query) use ($collegeOfficerPositionIds, $representativePositionIds, $voterYear) {
+            ->where(function ($query) use ($collegeOfficerPositionIds, $representativePositionIds, $voterYear) {
                 // Include college officers (Governor, Vice Gov, etc)
                 $query->whereIn('position_id', $collegeOfficerPositionIds);
 
@@ -73,8 +71,8 @@ class VotingController extends Controller
 
     public function store(Request $request)
     {
-        $voter = Auth::user(); 
-        $now = now();
+        $voter = Auth::user();
+        $now   = now();
 
         DB::beginTransaction();
         try {
@@ -83,56 +81,56 @@ class VotingController extends Controller
             }
 
             $transactionNumber = $this->generateTransactionNumber();
-            
+
             // Get all available positions
             $availablePositions = $this->getAvailablePositions($voter);
-            
+
             // Initialize votes array if null
             $votes = $request->votes ?? [];
 
             // Process all positions (voted and abstained)
             foreach ($availablePositions as $positionId) {
-                if (!isset($votes[$positionId])) {
+                if (! isset($votes[$positionId])) {
                     // Handle abstain vote
                     CastedVote::create([
                         'transaction_number' => $transactionNumber,
-                        'voter_id' => $voter->voter_id,
-                        'position_id' => $positionId,
-                        'candidate_id' => null, // null for abstain
-                        'vote_hash' => CastedVote::hashVote("abstain-{$positionId}"),
-                        'voted_at' => $now,
-                        'ip_address' => $request->ip(),
-                        'user_agent' => $request->userAgent()
+                        'voter_id'           => $voter->voter_id,
+                        'position_id'        => $positionId,
+                        'candidate_id'       => null, // null for abstain
+                        'vote_hash'          => CastedVote::hashVote("abstain-{$positionId}"),
+                        'voted_at'           => $now,
+                        'ip_address'         => $request->ip(),
+                        'user_agent'         => $request->userAgent(),
                     ]);
                 } else {
                     // Handle actual votes
                     $candidateIds = $votes[$positionId];
                     if ($positionId == 3) { // Senator position
-                        // Handle senator votes (array)
+                                                // Handle senator votes (array)
                         $senatorIds = is_array($candidateIds) ? $candidateIds : [];
                         foreach ($senatorIds as $candidateId) {
                             CastedVote::create([
                                 'transaction_number' => $transactionNumber,
-                                'voter_id' => $voter->voter_id,
-                                'position_id' => $positionId,
-                                'candidate_id' => $candidateId,
-                                'vote_hash' => CastedVote::hashVote($candidateId),
-                                'voted_at' => $now,
-                                'ip_address' => $request->ip(),
-                                'user_agent' => $request->userAgent()
+                                'voter_id'           => $voter->voter_id,
+                                'position_id'        => $positionId,
+                                'candidate_id'       => $candidateId,
+                                'vote_hash'          => CastedVote::hashVote($candidateId),
+                                'voted_at'           => $now,
+                                'ip_address'         => $request->ip(),
+                                'user_agent'         => $request->userAgent(),
                             ]);
                         }
                     } else {
                         // Handle single position votes
                         CastedVote::create([
                             'transaction_number' => $transactionNumber,
-                            'voter_id' => $voter->voter_id,
-                            'position_id' => $positionId,
-                            'candidate_id' => $candidateIds,
-                            'vote_hash' => CastedVote::hashVote($candidateIds),
-                            'voted_at' => $now,
-                            'ip_address' => $request->ip(),
-                            'user_agent' => $request->userAgent()
+                            'voter_id'           => $voter->voter_id,
+                            'position_id'        => $positionId,
+                            'candidate_id'       => $candidateIds,
+                            'vote_hash'          => CastedVote::hashVote($candidateIds),
+                            'voted_at'           => $now,
+                            'ip_address'         => $request->ip(),
+                            'user_agent'         => $request->userAgent(),
                         ]);
                     }
                 }
@@ -151,18 +149,18 @@ class VotingController extends Controller
 
     private function getAvailablePositions($voter)
     {
-        $globalPositionIds = [1, 2, 3]; // President, VP, Senator
+        $globalPositionIds         = [1, 2, 3];                  // President, VP, Senator
         $collegeOfficerPositionIds = [4, 5, 6, 7, 8, 9, 10, 11]; // Governor to PRO
-        
+
         $positions = collect($globalPositionIds)
             ->merge($collegeOfficerPositionIds);
-        
+
         // Add year representative position if applicable
-        $voterYear = (int)str_replace(['st', 'nd', 'rd', 'th'], '', $voter->year_level);
+        $voterYear = (int) str_replace(['st', 'nd', 'rd', 'th'], '', $voter->year_level);
         if ($voterYear < 4) {
             $positions->push($voterYear + 11); // Maps to correct representative ID
         }
-        
+
         return $positions->toArray();
     }
 
