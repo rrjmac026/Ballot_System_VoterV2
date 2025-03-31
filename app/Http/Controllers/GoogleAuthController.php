@@ -1,11 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
 use App\Models\Voter;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
 {
@@ -34,8 +32,8 @@ class GoogleAuthController extends Controller
             if ($voter) {
                 // ✅ Ensure that google_id is updated (so voter can log in again next time)
                 $voter->update([
-                    'google_id' => $googleUser->getId(), // Store Google ID
-                    'last_login_at' => now() // Update last login timestamp
+                    'google_id'     => $googleUser->getId(), // Store Google ID
+                    'last_login_at' => now(),                // Update last login timestamp
                 ]);
 
                 // ✅ Log in the voter using the voter guard
@@ -44,12 +42,12 @@ class GoogleAuthController extends Controller
                 return redirect()->route('dashboard')->with('success', 'Login successful!');
             } else {
                 return redirect()->route('login')->withErrors([
-                    'email' => 'Your email is not registered in the voter system.'
+                    'email' => 'Your email is not registered in the voter system.',
                 ]);
             }
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors([
-                'google_auth' => 'Google authentication failed. Please try again.'
+                'google_auth' => 'Google authentication failed. Please try again.',
             ]);
         }
     }
@@ -59,12 +57,12 @@ class GoogleAuthController extends Controller
         // Clear existing sessions
         Auth::guard('voter')->logout();
         session()->flush();
-        
+
         // Redirect to Google with correct OAuth parameters
         return Socialite::driver('google')
             ->with([
-                'prompt' => 'select_account',
-                'access_type' => 'offline'
+                'prompt'      => 'select_account',
+                'access_type' => 'offline',
             ])
             ->redirect();
     }
