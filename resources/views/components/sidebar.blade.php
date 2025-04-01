@@ -35,8 +35,6 @@
         <span x-show="!sidebarCollapsed">Share Your Feedback</span>
         </button>
 
-
-<<<<<<< HEAD
         <!-- Bible Quote Section -->
         <div class="mt-8 p-4 border-t border-gray-200 dark:border-gray-700"
              x-show="!sidebarCollapsed"
@@ -75,7 +73,6 @@
                 </button>
             </div>
         </div>
-=======
         <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
             <button type="submit"
@@ -86,7 +83,6 @@
                 <span x-show="!sidebarCollapsed">Logout</span>
             </button>
         </form>
->>>>>>> 2097bf565c8e954132c0de6249f0f74e588c1eee
     </nav>
 </div>
 
@@ -98,7 +94,7 @@
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Share us your Feedback and Reviews!
+                Share Your Thoughts!
                 </h3>
                 <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="authentication-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -112,7 +108,7 @@
                 <form class="space-y-4" action="{{ route('feedback.store') }}" method="POST">
                 @csrf
                     <!-- ratings -->
-                    <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Give us Star Rating!</label>
+                    <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your feedback helps us grow! Let us know what you loved and what we can improve.</label>
                     <div class="flex w-full justify-center items-center">
                         <input type="hidden" name="rating" id="ratingInput" value="0">
 
