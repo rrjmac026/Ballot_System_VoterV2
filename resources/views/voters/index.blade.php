@@ -551,28 +551,51 @@
                     }
 
                     function clearSelection(positionId) {
-                        // Find all radio buttons or checkboxes for this position
-                        const inputs = document.querySelectorAll(`input[name="votes[${positionId}]"], input[name="votes[${positionId}][]"]`);
+                        // Prevent the default button behavior
+                        event.preventDefault();
                         
-                        // Uncheck all inputs for this position
+                        // Find the position container
+                        const positionContainer = event.target.closest('.bg-white');
+                        if (!positionContainer) return;
+                        
+                        // Find all inputs within this position container
+                        const inputs = positionContainer.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+                        
+                        // Uncheck all inputs
                         inputs.forEach(input => {
                             input.checked = false;
                             input.disabled = false;
-                            input.closest('label').classList.remove('opacity-50');
+                            const label = input.closest('label');
+                            if (label) {
+                                label.classList.remove('opacity-50');
+                            }
                         });
 
-                        // Update senator count if applicable
-                        if (positionId === 'Senator') {
-                            document.getElementById('selectedCount').textContent = 0;
+                        // Reset senator count if this is the senator position
+                        if (positionContainer.querySelector('h3').textContent.includes('Senator')) {
+                            const countDisplay = document.getElementById('selectedCount');
+                            if (countDisplay) {
+                                countDisplay.textContent = '0';
+                            }
+                            
+                            // Re-enable all senator checkboxes
+                            const senatorCheckboxes = positionContainer.querySelectorAll('.senator-checkbox');
+                            senatorCheckboxes.forEach(cb => {
+                                cb.disabled = false;
+                                const label = cb.closest('label');
+                                if (label) {
+                                    label.classList.remove('opacity-50');
+                                }
+                            });
                         }
 
-                        // Visual feedback (optional)
+                        // Show feedback message
                         const message = document.createElement('div');
                         message.className = 'fixed bottom-4 right-4 bg-purple-600 text-white px-4 py-2 rounded-md shadow-lg z-50 animate-fade-in-out';
                         message.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Selection cleared';
                         document.body.appendChild(message);
 
-                        // Remove the message after 2 seconds
+                        // Remove feedback message after animation
                         setTimeout(() => {
                             message.remove();
                         }, 2000);
