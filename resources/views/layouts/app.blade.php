@@ -11,7 +11,9 @@
         <meta http-equiv="Pragma" content="no-cache">
         <meta http-equiv="Expires" content="0">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <!-- <title>{{ config('app.name', 'Laravel') }}</title> -->
+        <link rel="icon" href="{{ asset('images/tab_Icon.png') }}" type="image/x-icon">
+        <title>BukSU Comelec System</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

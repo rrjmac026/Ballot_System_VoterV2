@@ -6,6 +6,54 @@
     </x-slot>
 
     <div class="py-6">
+
+    <!-- success -->
+    @if(session('success'))
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+                <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Info</span>
+                <div>
+                    <span class="font-medium">{{ session('success') }}!</span>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- error -->
+    @if(session('error'))
+        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Info</span>
+                <div>
+                    <span class="font-medium">{{ session('error') }}!</span>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- request error -->
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium">{{ $error }}!</span>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    @endif
+
         <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <!-- Welcome Banner -->
             <div class="p-6 mb-6 bg-gradient-to-r from-[#240A34] to-[#371355] rounded-2xl shadow-lg">
@@ -18,7 +66,7 @@
                             Here's your voting status and information
                         </p>
                     </div>
-                    <img src="{{ asset('images/logo.jpg') }}" alt="BukSU Logo" 
+                    <img src="{{ asset('images/logo.jpg') }}" alt="BukSU Logo"
                         class="w-16 h-16 border-2 border-[#FC9D22] rounded-full shadow-md">
                 </div>
             </div>
@@ -30,14 +78,14 @@
                     <div class="flex items-center">
                         <div class="p-3 rounded-full bg-[#FC9D22]/10">
                             <svg class="w-8 h-8 text-[#FC9D22]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z">
                                 </path>
                             </svg>
                         </div>
                         <div class="ml-4">
                             <h2 class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-200">Voter Status</h2>
-                            <p class="text-sm font-medium 
+                            <p class="text-sm font-medium
                                 {{ Auth::user()->status === 'verified' ? 'text-green-600' : 'text-yellow-600' }}">
                                 {{ ucfirst(Auth::user()->status) }}
                             </p>
@@ -50,7 +98,7 @@
                     <div class="flex items-center">
                         <div class="p-3 rounded-full bg-[#240A34]/10">
                             <svg class="w-8 h-8 text-[#240A34]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
                                 </path>
                             </svg>
@@ -69,7 +117,7 @@
                     <div class="flex items-center">
                         <div class="p-3 rounded-full bg-[#FC9D22]/10">
                             <svg class="w-8 h-8 text-[#FC9D22]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                                 </path>
                             </svg>
@@ -89,17 +137,17 @@
                 <h3 class="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-200">Quick Actions</h3>
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     @if(!$castedVotes->count())
-                        <a href="{{ route('voter.voting') }}"  
+                        <a href="{{ route('voter.voting') }}"
                             class="flex items-center p-4 text-gray-700 bg-gray-100 rounded-lg hover:bg-[#240A34] hover:text-white transition-colors duration-200">
                             <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
                                 </path>
                             </svg>
                             Start Voting
                         </a>
                     @else
-                        <button onclick="toggleVotingDetails()" 
+                        <button onclick="toggleVotingDetails()"
                             class="flex items-center p-4 text-gray-700 bg-gray-100 rounded-lg hover:bg-[#240A34] hover:text-white transition-colors duration-200">
                             <i class="fas fa-list-alt mr-2"></i>
                             View Voting Details
@@ -126,14 +174,14 @@
                             Voted on: {{ $votedAt ? $votedAt->format('F j, Y g:i A') : 'N/A' }}
                         </p>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         @foreach($castedVotes as $vote)
                             <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex-shrink-0">
                                         @if($vote->candidate)
-                                            <img src="{{ $vote->candidate->photo_url }}" 
+                                            <img src="{{ $vote->candidate->photo_url }}"
                                                 class="w-16 h-16 rounded-lg object-cover"
                                                 alt="{{ $vote->candidate->first_name }}">
                                         @else
@@ -166,12 +214,12 @@
 
                     <!-- Add this new div for buttons -->
                     <div class="flex justify-end space-x-4 mt-6">
-                        <button onclick="toggleVotingDetails()" 
+                        <button onclick="toggleVotingDetails()"
                             class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200">
                             <i class="fas fa-times mr-2"></i>
                             Close
                         </button>
-                        <!-- <a href="{{ route('dashboard') }}" 
+                        <!-- <a href="{{ route('dashboard') }}"
                             class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200">
                             <i class="fas fa-home mr-2"></i>
                             Back to Dashboard
@@ -190,4 +238,3 @@
         </div>
     </div>
 </x-app-layout>
-

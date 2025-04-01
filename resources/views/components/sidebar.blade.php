@@ -35,12 +35,11 @@
         <span x-show="!sidebarCollapsed">Share Your Feedback</span>
         </button>
 
-<<<<<<< HEAD
         <!-- Bible Quote Section -->
         <div class="mt-8 p-4 border-t border-gray-200 dark:border-gray-700"
              x-show="!sidebarCollapsed"
-             x-data="{ 
-                quote: '', 
+             x-data="{
+                quote: '',
                 reference: '',
                 async fetchQuote() {
                     try {
@@ -68,13 +67,12 @@
                     <blockquote class="text-xs italic text-[#380041] dark:text-[#ede9e4]" x-text="quote"></blockquote>
                     <cite class="text-xs text-[#f9b40f] mt-2 block" x-text="reference"></cite>
                 </div>
-                <button @click="fetchQuote()" 
+                <button @click="fetchQuote()"
                         class="mt-2 text-xs text-[#380041]/50 dark:text-[#ede9e4]/50 hover:text-[#f9b40f] transition-colors duration-200">
                     <i class="fas fa-sync-alt mr-1"></i> New Quote
                 </button>
             </div>
         </div>
-=======
         <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
             <button type="submit"
@@ -85,7 +83,6 @@
                 <span x-show="!sidebarCollapsed">Logout</span>
             </button>
         </form>
->>>>>>> 2097bf565c8e954132c0de6249f0f74e588c1eee
     </nav>
 </div>
 
@@ -93,11 +90,11 @@
 <div id="authentication-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
         <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700 drop-shadow-lg">
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Share us your Feedback and Reviews!
+                Share Your Thoughts!
                 </h3>
                 <button type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="authentication-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -107,10 +104,11 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <div class="p-4 md:p-5">
-                <form class="space-y-4" action="#">
-
+            <div class="p-5 md:p-5">
+                <form class="space-y-4" action="{{ route('feedback.store') }}" method="POST">
+                @csrf
                     <!-- ratings -->
+                    <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your feedback helps us grow! Let us know what you loved and what we can improve.</label>
                     <div class="flex w-full justify-center items-center">
                         <input type="hidden" name="rating" id="ratingInput" value="0">
 
@@ -148,15 +146,15 @@
                     <!-- feedback messages here -->
                     <div>
                         <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your message</label>
-                        <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
+                        <textarea name="feedback" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
                     </div>
 
 
                     <!-- buttons -->
                     <div class="flex justify-end space-x-2">
-                        <button type="submit" class="w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                        <button type="submit" class="w-auto text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Submit</button>
 
-                        <button type="submit" class="w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Later</button>
+                        <button data-modal-hide="authentication-modal" type="button" class="w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Later</button>
                     </div>
 
                 </form>
@@ -165,6 +163,7 @@
     </div>
 </div>
 
+<!-- javascript for the star reviews -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const stars = document.querySelectorAll(".star");
