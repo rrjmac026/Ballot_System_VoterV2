@@ -16,7 +16,6 @@ class FeedbackReviewsController extends Controller
             $existingFeedback = Feedback::where('voter_id', Auth::id())->first();
 
             if ($existingFeedback) {
-                // If feedback exists, return a message
                 return redirect()->route('dashboard')->with('error', 'You already Submitted your Feedback!');
             }
 

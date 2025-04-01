@@ -14,11 +14,11 @@
             <div id="howToVoteModal" class="fixed inset-0 bg-[#1f2525]/50 backdrop-blur-sm z-50 overflow-y-auto hidden"> <!-- Added hidden class here -->
                 <div class="relative top-10 mx-auto p-6 border w-full max-w-2xl shadow-lg rounded-2xl bg-[#ede9e4] dark:bg-[#380041]">
                     <!-- Add absolute positioned close button -->
-                    <button onclick="closeGuideModal()" 
+                    <button onclick="closeGuideModal()"
                             class="absolute top-3 right-3 text-[#1f2525] dark:text-[#ede9e4] hover:text-[#f9b40f] transition-colors duration-200">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
-                    
+
                     <div class="mt-3">
                         <div class="flex items-center justify-between">
                             <h3 class="text-2xl font-bold text-[#380041] dark:text-[#ede9e4]">
@@ -29,7 +29,7 @@
                                 <i class="fas fa-times text-xl"></i>
                             </button>
                         </div>
-                        
+
                         <div class="mt-6 space-y-6">
                             <div class="space-y-4">
                                 <div class="flex items-start space-x-4">
@@ -39,7 +39,7 @@
                                         <p class="text-[#1f2525] dark:text-[#ede9e4]/90">Click on the candidate card to select your choice for each position. You can only select one candidate per position.</p>
                                     </div>
                                 </div>
-                                
+
                                 <div class="flex items-start space-x-4">
                                     <div class="w-8 h-8 rounded-full bg-[#f9b40f] text-[#ede9e4] flex items-center justify-center flex-shrink-0">2</div>
                                     <div>
@@ -47,7 +47,7 @@
                                         <p class="text-[#1f2525] dark:text-[#ede9e4]/90">Double-check your selections before submitting. Use the 'Reselect' button if you need to change your vote.</p>
                                     </div>
                                 </div>
-                                
+
                                 <div class="flex items-start space-x-4">
                                     <div class="w-8 h-8 rounded-full bg-[#f9b40f] text-[#ede9e4] flex items-center justify-center flex-shrink-0">3</div>
                                     <div>
@@ -56,16 +56,16 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="mt-8 p-4 bg-[#1f2525]/5 dark:bg-[#ede9e4]/5 rounded-lg">
                                 <p class="text-sm text-[#380041] dark:text-[#ede9e4]">
                                     <i class="fas fa-exclamation-triangle text-[#f9b40f] mr-2"></i>
                                     Important: Your vote is confidential and cannot be changed once submitted.
                                 </p>
                             </div>
-                            
+
                             <div class="flex justify-end">
-                                <button onclick="closeGuideModal()" 
+                                <button onclick="closeGuideModal()"
                                     class="px-6 py-2 bg-[#f9b40f] text-[#ede9e4] rounded-lg hover:bg-[#380041] transition-colors duration-200">
                                     Got it!
                                 </button>
@@ -132,9 +132,9 @@
                                             @endif
                                             {{ $position->name }}
                                         </h3>
-                                        
+
                                         <!-- Add Reset Button -->
-                                        <button type="button" 
+                                        <button type="button"
                                                 onclick="clearSelection('{{ $position->position_id }}')"
                                                 class="text-sm px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-purple-500 hover:text-white transition-colors duration-200 flex items-center">
                                             <i class="fas fa-redo-alt mr-1"></i> Reselect
@@ -154,21 +154,21 @@
                                         @foreach($position->candidates as $candidate)
                                             @if($position->name === 'Senator')
                                                 <div class="relative">
-                                                    <input type="checkbox" 
-                                                        name="votes[{{ $position->position_id }}][]" 
+                                                    <input type="checkbox"
+                                                        name="votes[{{ $position->position_id }}][]"
                                                         value="{{ $candidate->candidate_id }}"
                                                         id="candidate_{{ $candidate->candidate_id }}"
                                                         class="peer hidden senator-checkbox"
                                                         onchange="handleSenatorSelection(this)">
-                                                    <label for="candidate_{{ $candidate->candidate_id }}" 
-                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
+                                                    <label for="candidate_{{ $candidate->candidate_id }}"
+                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer
                                                             transition-all duration-200 ease-in-out
                                                             peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
                                                             hover:bg-gray-100 dark:hover:bg-gray-700">
                                                         <div class="flex flex-col items-center space-y-4">
                                                             <!-- Candidate Photo -->
                                                             <div class="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                                                                <img src="{{ $candidate->photo_url }}" 
+                                                                <img src="{{ $candidate->photo_url }}"
                                                                     alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
                                                                     class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
                                                                     onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
@@ -196,21 +196,21 @@
                                                 </div>
                                             @else
                                                 <div class="relative">
-                                                    <input type="radio" 
-                                                        name="votes[{{ $position->position_id }}]" 
+                                                    <input type="radio"
+                                                        name="votes[{{ $position->position_id }}]"
                                                         value="{{ $candidate->candidate_id }}"
                                                         id="candidate_{{ $candidate->candidate_id }}"
                                                         class="peer hidden"
                                                         required>
-                                                    <label for="candidate_{{ $candidate->candidate_id }}" 
-                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
+                                                    <label for="candidate_{{ $candidate->candidate_id }}"
+                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer
                                                             transition-all duration-200 ease-in-out
                                                             peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
                                                             hover:bg-gray-100 dark:hover:bg-gray-700">
                                                         <div class="flex flex-col items-center space-y-4">
                                                             <!-- Candidate Photo -->
                                                             <div class="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                                                                <img src="{{ $candidate->photo_url }}" 
+                                                                <img src="{{ $candidate->photo_url }}"
                                                                     alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
                                                                     class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
                                                                     onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
@@ -244,7 +244,7 @@
                         @endforeach
 
                         <div class="flex justify-end mt-6">
-                            <button type="button" 
+                            <button type="button"
                                 onclick="showStep2()"
                                 class="inline-flex justify-center items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                                 Next: College Positions
@@ -265,9 +265,9 @@
                                                 College-Based
                                             </span>
                                         </h3>
-                                        
+
                                         <!-- Add Reset Button -->
-                                        <button type="button" 
+                                        <button type="button"
                                                 onclick="clearSelection('{{ $position->position_id }}')"
                                                 class="text-sm px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-purple-500 hover:text-white transition-colors duration-200 flex items-center">
                                             <i class="fas fa-redo-alt mr-1"></i> Reselect
@@ -278,21 +278,21 @@
                                         @foreach($position->candidates as $candidate)
                                             @if($candidate->college_id == Auth::user()->college_id)
                                                 <div class="relative">
-                                                    <input type="radio" 
-                                                        name="votes[{{ $position->position_id }}]" 
+                                                    <input type="radio"
+                                                        name="votes[{{ $position->position_id }}]"
                                                         value="{{ $candidate->candidate_id }}"
                                                         id="candidate_{{ $candidate->candidate_id }}"
                                                         class="peer hidden"
                                                         required>
-                                                    <label for="candidate_{{ $candidate->candidate_id }}" 
-                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer 
+                                                    <label for="candidate_{{ $candidate->candidate_id }}"
+                                                        class="block p-4 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer
                                                             transition-all duration-200 ease-in-out
                                                             peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30
                                                             hover:bg-gray-100 dark:hover:bg-gray-700">
                                                         <div class="flex flex-col items-center space-y-4">
                                                             <!-- Candidate Photo -->
                                                             <div class="w-32 h-40 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                                                                <img src="{{ $candidate->photo_url }}" 
+                                                                <img src="{{ $candidate->photo_url }}"
                                                                     alt="{{ $candidate->first_name }} {{ $candidate->last_name }}"
                                                                     class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-200"
                                                                     onerror="this.src='{{ asset('images/candidates/default-avatar.png') }}'">
@@ -332,7 +332,7 @@
                                 <i class="fas fa-arrow-left mr-2"></i>
                                 Back to Global Positions
                             </button>
-                            <button type="button" 
+                            <button type="button"
                                 onclick="showConfirmationModal()"
                                 class="inline-flex justify-center items-center px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                                 <i class="fas fa-check-circle mr-2"></i>
@@ -396,7 +396,7 @@
                     // Update getSelectedCandidates function to handle arrays
                     function getSelectedCandidates() {
                         const selectedCandidates = [];
-                        
+
                         // Handle senators separately
                         const senatorCheckboxes = document.querySelectorAll('.senator-checkbox:checked');
                         if (senatorCheckboxes.length > 0) {
@@ -417,7 +417,7 @@
                             const position = label.closest('.bg-white').querySelector('h3').textContent.trim();
                             const candidateName = label.querySelector('.font-medium').textContent.trim();
                             const partylist = label.querySelector('.bg-indigo-100')?.textContent.trim() || 'Independent';
-                            
+
                             selectedCandidates.push({ position, candidateName, partylist });
                         });
 
@@ -467,12 +467,12 @@
                                 selectedCandidates.forEach(candidate => {
                                     const candidateElement = document.createElement('div');
                                     candidateElement.classList.add('p-3', 'bg-gray-50', 'dark:bg-gray-700', 'rounded-lg');
-                                    
+
                                     if (candidate.position === 'Senator') {
                                         candidateElement.innerHTML = `
                                             <h4 class="font-semibold text-gray-900 dark:text-white">Senators (${candidate.candidates.length})</h4>
                                             <div class="mt-2 space-y-1">
-                                                ${candidate.candidates.map(name => 
+                                                ${candidate.candidates.map(name =>
                                                     `<p class="text-sm text-gray-600 dark:text-gray-300">• ${name}</p>`
                                                 ).join('')}
                                             </div>
@@ -484,7 +484,7 @@
                                             <span class="text-xs text-indigo-600 dark:text-indigo-400">${candidate.partylist}</span>
                                         `;
                                     }
-                                    
+
                                     candidatesContainer.appendChild(candidateElement);
                                 });
                             }
@@ -505,17 +505,17 @@
                         // Set voted status in all storage methods
                         localStorage.setItem('hasVoted', 'true');
                         document.cookie = "has_voted=true; path=/; max-age=2592000"; // 30 days
-                        
+
                         // Remove guide shown flag as it's no longer needed
                         localStorage.removeItem('guideShown');
-                        
+
                         document.getElementById('votingForm').submit();
                     }
 
                     function clearSelection(positionId) {
                         // Find all radio buttons or checkboxes for this position
                         const inputs = document.querySelectorAll(`input[name="votes[${positionId}]"], input[name="votes[${positionId}][]"]`);
-                        
+
                         // Uncheck all inputs for this position
                         inputs.forEach(input => {
                             input.checked = false;
@@ -542,7 +542,7 @@
 
                     function handleSenatorSelection(checkbox) {
                         const selectedSenators = document.querySelectorAll('.senator-checkbox:checked').length;
-                        
+
                         if (selectedSenators > 12) {
                             checkbox.checked = false;
                             alert('You can only select up to 12 senators');
