@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>BukSU Comelec System</title>
+        <link rel="icon" href="{{ asset('images/tab_Icon.png') }}" type="image/x-icon">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="antialiased bg-gradient-to-br from-[#ede9e4] to-[#f9b40f]/10 dark:from-[#380041] dark:to-[#1f2525] min-h-screen">
@@ -62,7 +63,7 @@
                     <!-- Image Container -->
                     <div class="relative group">
                         <div class="absolute inset-0 bg-[#f9b40f]/20 rounded-2xl blur-2xl group-hover:bg-[#f9b40f]/30 transition-all duration-300"></div>
-                        <img src="{{ asset('images/logo.jpg') }}" alt="BukSU Comelec" 
+                        <img src="{{ asset('images/logo.jpg') }}" alt="BukSU Comelec"
                              class="relative w-full rounded-2xl shadow-lg border-2 border-[#f9b40f]/20 group-hover:border-[#f9b40f]/40 transition-all duration-300">
                     </div>
                 </div>

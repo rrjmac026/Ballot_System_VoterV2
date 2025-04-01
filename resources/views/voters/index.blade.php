@@ -46,7 +46,7 @@
                 @endif
             });
         </script>
-        
+
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- How to Vote Guide Modal -->
             <div id="howToVoteModal" class="fixed inset-0 bg-[#1f2525]/50 backdrop-blur-sm z-50 overflow-y-auto hidden"> <!-- Added hidden class here -->
@@ -551,42 +551,27 @@
                     }
 
                     function clearSelection(positionId) {
-<<<<<<< HEAD
-                        // Find all radio buttons or checkboxes for this position
+                        // Get the position container
                         const inputs = document.querySelectorAll(`input[name="votes[${positionId}]"], input[name="votes[${positionId}][]"]`);
 
                         // Uncheck all inputs for this position
-=======
-                        // Prevent the default button behavior
-                        event.preventDefault();
-                        
-                        // Find the position container
-                        const positionContainer = event.target.closest('.bg-white');
-                        if (!positionContainer) return;
-                        
-                        // Find all inputs within this position container
-                        const inputs = positionContainer.querySelectorAll('input[type="radio"], input[type="checkbox"]');
-                        
-                        // Uncheck all inputs
->>>>>>> 884da3b3e025dacc3881ab2fe87bd120121d7650
                         inputs.forEach(input => {
                             input.checked = false;
-                            input.disabled = false;
+
+                            // Remove any visual indicators of selection
                             const label = input.closest('label');
                             if (label) {
-                                label.classList.remove('opacity-50');
+                                label.classList.remove('peer-checked:border-purple-500', 'peer-checked:bg-purple-50', 'dark:peer-checked:bg-purple-900/30');
                             }
                         });
 
-                        // Reset senator count if this is the senator position
-                        if (positionContainer.querySelector('h3').textContent.includes('Senator')) {
-                            const countDisplay = document.getElementById('selectedCount');
-                            if (countDisplay) {
-                                countDisplay.textContent = '0';
-                            }
-                            
+                        // Handle senator count if this is the senator position
+                        const senatorCount = document.getElementById('selectedCount');
+                        if (senatorCount && inputs[0]?.classList.contains('senator-checkbox')) {
+                            senatorCount.textContent = '0';
+
                             // Re-enable all senator checkboxes
-                            const senatorCheckboxes = positionContainer.querySelectorAll('.senator-checkbox');
+                            const senatorCheckboxes = document.querySelectorAll('.senator-checkbox');
                             senatorCheckboxes.forEach(cb => {
                                 cb.disabled = false;
                                 const label = cb.closest('label');
@@ -596,15 +581,15 @@
                             });
                         }
 
-                        // Show feedback message
-                        const message = document.createElement('div');
-                        message.className = 'fixed bottom-4 right-4 bg-purple-600 text-white px-4 py-2 rounded-md shadow-lg z-50 animate-fade-in-out';
-                        message.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Selection cleared';
-                        document.body.appendChild(message);
+                        // Show feedback toast
+                        const toast = document.createElement('div');
+                        toast.className = 'fixed bottom-4 right-4 bg-purple-600 text-white px-4 py-2 rounded-md shadow-lg z-50 animate-fade-in-out';
+                        toast.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Selection cleared';
+                        document.body.appendChild(toast);
 
-                        // Remove feedback message after animation
+                        // Remove toast after animation
                         setTimeout(() => {
-                            message.remove();
+                            toast.remove();
                         }, 2000);
                     }
 
