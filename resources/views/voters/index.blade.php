@@ -9,6 +9,44 @@
     </x-slot>
 
     <div class="py-6">
+    <script>
+            // Configure Toastr
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            // Wait for document ready
+            $(document).ready(function() {
+                @if(Session::has('success'))
+                    toastr.success("{{ Session::get('success') }}");
+                @endif
+
+                @if(Session::has('error'))
+                    toastr.error("{{ Session::get('error') }}");
+                @endif
+
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        toastr.error("{{ $error }}");
+                    @endforeach
+                @endif
+            });
+        </script>
+        
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- How to Vote Guide Modal -->
             <div id="howToVoteModal" class="fixed inset-0 bg-[#1f2525]/50 backdrop-blur-sm z-50 overflow-y-auto hidden"> <!-- Added hidden class here -->
