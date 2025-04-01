@@ -9,6 +9,44 @@
     </x-slot>
 
     <div class="py-6">
+    <script>
+            // Configure Toastr
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            // Wait for document ready
+            $(document).ready(function() {
+                @if(Session::has('success'))
+                    toastr.success("{{ Session::get('success') }}");
+                @endif
+
+                @if(Session::has('error'))
+                    toastr.error("{{ Session::get('error') }}");
+                @endif
+
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        toastr.error("{{ $error }}");
+                    @endforeach
+                @endif
+            });
+        </script>
+        
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- How to Vote Guide Modal -->
             <div id="howToVoteModal" class="fixed inset-0 bg-[#1f2525]/50 backdrop-blur-sm z-50 overflow-y-auto hidden"> <!-- Added hidden class here -->
@@ -513,28 +551,58 @@
                     }
 
                     function clearSelection(positionId) {
+<<<<<<< HEAD
                         // Find all radio buttons or checkboxes for this position
                         const inputs = document.querySelectorAll(`input[name="votes[${positionId}]"], input[name="votes[${positionId}][]"]`);
 
                         // Uncheck all inputs for this position
+=======
+                        // Prevent the default button behavior
+                        event.preventDefault();
+                        
+                        // Find the position container
+                        const positionContainer = event.target.closest('.bg-white');
+                        if (!positionContainer) return;
+                        
+                        // Find all inputs within this position container
+                        const inputs = positionContainer.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+                        
+                        // Uncheck all inputs
+>>>>>>> 884da3b3e025dacc3881ab2fe87bd120121d7650
                         inputs.forEach(input => {
                             input.checked = false;
                             input.disabled = false;
-                            input.closest('label').classList.remove('opacity-50');
+                            const label = input.closest('label');
+                            if (label) {
+                                label.classList.remove('opacity-50');
+                            }
                         });
 
-                        // Update senator count if applicable
-                        if (positionId === 'Senator') {
-                            document.getElementById('selectedCount').textContent = 0;
+                        // Reset senator count if this is the senator position
+                        if (positionContainer.querySelector('h3').textContent.includes('Senator')) {
+                            const countDisplay = document.getElementById('selectedCount');
+                            if (countDisplay) {
+                                countDisplay.textContent = '0';
+                            }
+                            
+                            // Re-enable all senator checkboxes
+                            const senatorCheckboxes = positionContainer.querySelectorAll('.senator-checkbox');
+                            senatorCheckboxes.forEach(cb => {
+                                cb.disabled = false;
+                                const label = cb.closest('label');
+                                if (label) {
+                                    label.classList.remove('opacity-50');
+                                }
+                            });
                         }
 
-                        // Visual feedback (optional)
+                        // Show feedback message
                         const message = document.createElement('div');
                         message.className = 'fixed bottom-4 right-4 bg-purple-600 text-white px-4 py-2 rounded-md shadow-lg z-50 animate-fade-in-out';
                         message.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Selection cleared';
                         document.body.appendChild(message);
 
-                        // Remove the message after 2 seconds
+                        // Remove feedback message after animation
                         setTimeout(() => {
                             message.remove();
                         }, 2000);

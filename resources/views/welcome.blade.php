@@ -12,7 +12,7 @@
             <nav class="fixed w-full z-20 top-0 start-0 bg-[#ede9e4]/90 dark:bg-[#380041]/90 border-b border-[#f9b40f]/20 backdrop-blur-sm">
                 <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                     <a href="/" class="flex items-center space-x-3">
-                        <img src="{{ asset('images/tab_icon.png') }}" class="h-12 border-2 border-[#f9b40f] rounded-full p-1" alt="BukSU Logo" />
+                        <img src="{{ asset('images/logo.jpg') }}" class="h-12 border-2 border-[#f9b40f] rounded-full p-1" alt="BukSU Logo" />
                         <span class="self-center text-2xl font-bold whitespace-nowrap text-[#380041] dark:text-[#ede9e4]">
                             Buk<span class="text-[#f9b40f]">SU</span> <span class="text-[#1f2525] dark:text-[#f9b40f]">Comelec</span>
                         </span>
@@ -62,7 +62,7 @@
                     <!-- Image Container -->
                     <div class="relative group">
                         <div class="absolute inset-0 bg-[#f9b40f]/20 rounded-2xl blur-2xl group-hover:bg-[#f9b40f]/30 transition-all duration-300"></div>
-                        <img src="{{ asset('images/tab_icon.png') }}" alt="BukSU Comelec" 
+                        <img src="{{ asset('images/logo.jpg') }}" alt="BukSU Comelec" 
                              class="relative w-full rounded-2xl shadow-lg border-2 border-[#f9b40f]/20 group-hover:border-[#f9b40f]/40 transition-all duration-300">
                     </div>
                 </div>
