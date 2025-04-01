@@ -14,7 +14,7 @@
                 </button>
                 
                 <!-- Logo -->
-                <img src="{{ asset('images/tab_icon.png') }}" class="h-8 mr-3" alt="BukSU Logo" />
+            
                 <span class="self-center text-xl font-bold sm:text-2xl whitespace-nowrap dark:text-white">
                     Buk<span class="text-[#FC9D22]">SU</span> Comelec
                 </span>

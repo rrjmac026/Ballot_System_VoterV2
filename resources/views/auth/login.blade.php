@@ -6,9 +6,32 @@
     <title>BUKSU COMELEC: Student Voting System</title>
     <link rel="icon" href="{{ asset('images/tab_Icon.png') }}" type="image/x-icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        
+        // Save voting status before clearing
+        const hasVoted = localStorage.getItem('hasVoted');
+        
+        // Clear storage but preserve voting status
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Restore voting status
+        if (hasVoted) {
+            localStorage.setItem('hasVoted', hasVoted);
+        }
+        
+        // Clear cookies
+        document.cookie.split(';').forEach(function(c) {
+            document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+        });
+    </script>
 </head>
 
-<body class="bg-cover bg-center w-full min-h-screen flex justify-center items-center p-4" style="background-image: url('{{ asset('images/background.jpg') }}')">
+<body class="bg-cover bg-center bg-no-repeat w-full min-h-screen flex justify-center items-center p-4" 
+    style="background-image: url('{{ asset('images/background1.jpg') }}'); background-size: 100% 100%;">
     @if ($errors->any())
         @foreach ($errors->all() as $error)
             <div class="fixed top-5 right-5 p-4 rounded-lg shadow-lg w-[calc(100%-2rem)] sm:w-[400px] flex items-center gap-3 bg-red-100 border border-red-200 text-red-700 z-50 animate-slide-in" role="alert">

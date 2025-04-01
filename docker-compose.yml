@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+
+networks:
+  app-network:
+
+volumes:
+  db-data:
