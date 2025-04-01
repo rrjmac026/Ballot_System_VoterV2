@@ -1,8 +1,5 @@
 FROM php:8.2-apache
 
-# Set DNS servers using environment variables
-ENV DEBIAN_FRONTEND=noninteractive
-
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -13,10 +10,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    npm
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    npm \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
@@ -27,8 +22,10 @@ RUN a2enmod rewrite
 # Set the ServerName to suppress warnings
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Get specific Composer version
-COPY --from=composer:2.6.5 /usr/bin/composer /usr/bin/composer
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+COPY ./public /app/public
 
 # Set working directory
 WORKDIR /var/www/html
@@ -36,12 +33,14 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Install dependencies
-RUN composer install
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Install Node.js dependencies
 RUN npm install
 RUN npm run build
 
-# Set permissions
+# Set permissions for Laravel storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 

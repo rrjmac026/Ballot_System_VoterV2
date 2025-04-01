@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>System Maintenance - BukSU COMELEC</title>
-    <link rel="icon" href="{{ asset('images/tab_Icon.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/x-icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gradient-to-br from-[#240A34] via-[#371355] to-[#240A34] min-h-screen">
